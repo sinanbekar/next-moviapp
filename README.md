@@ -3,6 +3,8 @@
 
 A Movie App built using Next.js and [The Movie Database (TMDB v3)](https://www.themoviedb.org/) API. 
 
+![moviapp](https://i.imgur.com/xofDlAh.png)
+
 ## Tech Stack
 
 Built with:
