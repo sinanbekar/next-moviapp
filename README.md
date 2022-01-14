@@ -16,7 +16,7 @@ Built with:
 
 ## Demo
 
-A [live deployment (next-moviapp.vercel.app)](next-moviapp.vercel.app) of this app is available to try it out.
+A [live deployment (next-moviapp.vercel.app)](https://next-moviapp.vercel.app) of this app is available to try it out.
 
 ## Contributing
 
