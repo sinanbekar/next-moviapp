@@ -56,7 +56,7 @@ const SingleItem: React.FC<{ item: SingleItemData }> = ({ item }) => {
           <div className="flex justify-between px-4 font-semibold">
             <div className="flex items-center gap-2">
               <BsStarFill className="text-moviyellow" />
-              <span>{item.rating}</span>
+              <span>{item.rating.toFixed(1)}</span>
             </div>
             <div>{item.year}</div>
           </div>

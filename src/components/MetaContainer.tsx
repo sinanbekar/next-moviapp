@@ -41,7 +41,7 @@ const MetaContainer: React.FC<Props> = ({
         {detailPageData.isReleased && detailPageData.rating > 0 && (
           <div className="flex basis-3 sm:basis-auto items-center gap-2">
             <BsStarFill className="text-moviyellow" />
-            <span>{detailPageData.rating}</span>
+            <span>{detailPageData.rating.toFixed(1)}</span>
           </div>
         )}
 
