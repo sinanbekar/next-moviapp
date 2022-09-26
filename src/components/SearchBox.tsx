@@ -1,132 +1,134 @@
-import React from "react";
-import Link from "next/link";
-import { useDebouncedCallback } from "use-debounce";
-import useOnClickOutside from "@/hooks/useOnClickOutside";
+import React, { Fragment, FocusEvent } from "react";
+import { Combobox, Transition } from "@headlessui/react";
+import { SearchItem } from "@/types/parsed-tmdb";
 import useRequest from "@/hooks/useRequest";
-import { MultiSearch, SearchSub } from "@/types/parsed-tmdb";
-import Image from "next/image";
+import debounce from "lodash.debounce";
+import { useRouter } from "next/router";
+import cn from "classnames";
+import ImageWithShimmer from "./ImageWithShimmer";
 
-const SearchBox: React.FC = () => {
-  const [open, setOpen] = React.useState(false);
-  const [term, setTerm] = React.useState("");
-  const ref = useOnClickOutside((e) => {
-    setOpen(false);
-  });
-  const debounced = useDebouncedCallback((value) => {
-    setTerm(value);
-  }, 300);
+interface SearchBoxProps {
+  onFocus: (e: FocusEvent<HTMLInputElement>) => void;
+  onBlur: (e: FocusEvent<HTMLInputElement>) => void;
+}
 
-  const SearchBoxContainer: React.FC = ({ children }) => {
-    return (
-      <div
-        ref={ref}
-        className="absolute left-0 lg:left-auto w-full lg:w-[35rem] z-40 min-h-96 bg-movidark rounded-b-3xl"
-      >
-        {children}
-      </div>
-    );
-  };
+function SearchBox({ onFocus, onBlur }: SearchBoxProps) {
+  const router = useRouter();
+  const [query, setQuery] = React.useState("");
+  const [selectedItem, setSelectedItem] = React.useState<SearchItem>();
 
-  const apiSearchEndpoint = `/api/search?q=${term}`;
-  const { data, error, isLoading } = useRequest<{ results: MultiSearch }>(
-    term ? apiSearchEndpoint : null
+  const apiSearchEndpoint = `/api/search?q=${query}`;
+  const { data, error, isLoading } = useRequest<{ results: SearchItem[] }>(
+    query ? apiSearchEndpoint : null
   );
 
-  const SearchSubContainer: React.FC<{ mediaType: string }> = ({
-    mediaType,
-  }) => {
-    return (
-      <div>
-        <span className="text-moviyellow">
-          {mediaType === "movie" ? "Movies" : "TV Shows"}
-        </span>
-        <div className="py-2">
-          <div className="flex flex-wrap gap-2">
-            {data &&
-            (mediaType === "movie"
-              ? data.results.movies.length > 0
-              : data.results.tvShows.length > 0)
-              ? (mediaType === "movie"
-                  ? data.results.movies.slice(0, 6)
-                  : data.results.tvShows.slice(0, 6)
-                ).map((data) => {
-                  return <SearchSingleItem key={data.id} itemData={data} />;
-                })
-              : "Not Found"}
-          </div>
+  React.useEffect(() => {
+    if (selectedItem) {
+      const cachedItem = selectedItem;
+      setSelectedItem(undefined);
+      router.push(cachedItem.redirectUrl);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedItem]);
+
+  const debouncedOnChange = React.useMemo(() => {
+    return debounce((e: any) => {
+      setQuery(e.target.value);
+    }, 300);
+  }, []);
+
+  React.useEffect(() => {
+    return () => {
+      debouncedOnChange.cancel();
+    };
+  }, [debouncedOnChange]);
+
+  return (
+    <div className="relative w-full max-w-sm">
+      <Combobox value={selectedItem} onChange={setSelectedItem}>
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <svg
+            className="h-5 w-5 text-white/60"
+            aria-hidden="true"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clipRule="evenodd"
+            ></path>
+          </svg>
+          <span className="sr-only">Search icon</span>
         </div>
-      </div>
-    );
-  };
 
-  return (
-    <>
-      <div className="p-3 opacity-70">
-        <input
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            debounced(e.target.value);
-            if (e.target.value) {
-              if (!open) {
-                setOpen(true);
-              }
-            } else {
-              setOpen(false);
-            }
-          }}
-          className="border-none bg-transparent outline-none"
-          placeholder="Search a movie or tv show..."
-          type="search"
+        <Combobox.Input
+          onChange={debouncedOnChange}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          displayValue={(item: SearchItem) => item?.title}
+          className="block w-full rounded-full bg-white/10 p-1 pl-10 text-white/70 ring-white/30 focus:outline-none focus:ring-1 sm:text-sm md:py-1.5"
+          placeholder="Find Movies &#38; TV"
         />
-      </div>
-      <div className={`lg:relative ${!open ? "hidden" : ""}`}>
-        <SearchBoxContainer>
-          {error || isLoading ? (
-            <div className="mx-auto p-5 flex h-1/4 w-full justify-center items-center">
-              <h2>
-                {error
-                  ? "An error has occurred "
-                  : isLoading
-                  ? "Loading..."
-                  : ""}
-              </h2>
-            </div>
-          ) : data ? (
-            <div
-              className={`${!open ? "hidden" : ""} flex p-8 ${
-                data.results.movies.length > data.results.tvShows.length
-                  ? "flex-col"
-                  : "flex-col-reverse"
-              }`}
-            >
-              <SearchSubContainer mediaType="movie" />
-              <SearchSubContainer mediaType="tv" />
-            </div>
-          ) : null}
-        </SearchBoxContainer>
-      </div>
-    </>
-  );
-};
-
-const SearchSingleItem: React.FC<{ itemData: SearchSub }> = ({ itemData }) => {
-  return (
-    <div className="bg-gray-400 bg-opacity-25 w-[calc(50%-0.5rem)] rounded-r-xl">
-      <Link href={itemData.redirectUrl}>
-        <a>
-          <div className="flex">
-            <div className="w-14 h-20 relative">
-              <Image alt={itemData.title} layout="fill" objectFit="cover" src={itemData.posterUrl} />
-            </div>
-
-            <div className="px-4 pt-2 truncate">
-              <h5 className="">{itemData.title}</h5>
-              <span className="opacity-75">{itemData.year}</span>
-            </div>
-          </div>
-        </a>
-      </Link>
+        <Transition
+          as={Fragment}
+          leave="transition ease-in duration-100"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <Combobox.Options className="absolute mt-1 max-h-[80vh] w-full snap-y snap-proximity overflow-hidden overflow-y-auto overflow-x-hidden rounded-md bg-movidark/95 shadow-lg scrollbar hover:overflow-y-auto hover:scrollbar-thin hover:scrollbar-track-transparent hover:scrollbar-thumb-gray-600/50 hover:scrollbar-thumb-rounded-full">
+            {!data?.results || data.results.length === 0 ? (
+              query !== "" ? (
+                <span className="block p-4 text-sm text-white/70">
+                  {data ? "Nothing found" : "Loading..."}
+                </span>
+              ) : null
+            ) : (
+              data.results.map((item) => (
+                <Combobox.Option
+                  key={item.id}
+                  className={({ active }) =>
+                    cn("relative cursor-pointer bg-transparent px-4 py-2", {
+                      "bg-gray-500/50": active,
+                    })
+                  }
+                  value={item}
+                >
+                  {() => (
+                    <div className="flex items-center gap-x-2">
+                      <ImageWithShimmer
+                        height={60}
+                        width={40}
+                        src={item.posterUrl}
+                        className="h-[60px] w-[40px] rounded-sm"
+                        alt={item.title}
+                      />
+                      <div className="flex max-w-sm flex-col">
+                        <span className="block truncate text-sm">
+                          {item.title}
+                        </span>
+                        {Boolean(item.mediaType) && Boolean(item.year) ? (
+                          <span className="block text-sm text-white/50">
+                            {item.mediaType === "movie"
+                              ? "Movie"
+                              : item.mediaType === "tv"
+                              ? "TV Show"
+                              : ""}
+                            &nbsp; • {item.year}
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+                  )}
+                </Combobox.Option>
+              ))
+            )}
+          </Combobox.Options>
+        </Transition>
+      </Combobox>
     </div>
   );
-};
+}
 
 export default SearchBox;

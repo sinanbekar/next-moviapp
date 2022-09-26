@@ -1,13 +1,8 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import React from "react";
+import MediaListingView from "@/views/MediaListingView";
 import { TMDB } from "@/lib/tmdb";
-import Layout from "@/components/Layout";
-import Slider from "@/components/Slider";
-import SingleItem from "@/components/SingleItem";
-import InfiniteScroll from "@/components/InfiniteScroll";
 import { parseSlugToIdAndTitle, SeoHead } from "@/helpers/seo";
-import { isGenrePageSlug, parseSingleItemData } from "@/helpers/movi";
-import { Movies, TvShows } from "@/types/tmdb/popular";
+import { isGenrePageSlug } from "@/helpers/movi";
 import { movieGenres, tvGenres } from "@/data/genres";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -44,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      genreData,
+      mediaData: genreData,
       tmdbQueryString,
       genreMeta,
     },
@@ -52,20 +47,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const Genre = ({
-  genreData,
+  mediaData,
   tmdbQueryString,
   genreMeta,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [genreDataState, setGenreDataState] = React.useState<Movies | TvShows>(
-    genreData
-  );
-
-  React.useEffect(() => {
-    setGenreDataState(genreData);
-  }, [genreData]);
-
   return (
-    <Layout>
+    <>
       <SeoHead
         title={`${genreMeta.genre.name} ${
           genreMeta.mediaType === "movie" ? "Movies" : "TV Shows"
@@ -74,17 +61,8 @@ const Genre = ({
           genreMeta.mediaType === "movie" ? "Movies" : "TV Shows"
         }`}
       />
-      <Slider sliderItems={genreDataState.results.slice(0, 4)} />
-      <div className="py-8 flex flex-wrap gap-4">
-        {genreDataState.results.slice(4).map((data) => (
-          <SingleItem key={data.id} item={parseSingleItemData(data)} />
-        ))}
-        <InfiniteScroll
-          setDataState={setGenreDataState}
-          tmdbQueryString={tmdbQueryString}
-        />
-      </div>
-    </Layout>
+      <MediaListingView {...{ mediaData, tmdbQueryString }} />
+    </>
   );
 };
 

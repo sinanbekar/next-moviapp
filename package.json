@@ -9,21 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.2",
     "@reduxjs/toolkit": "^1.8.5",
+    "classnames": "^2.3.2",
     "firebase": "^9.6.1",
+    "lodash.debounce": "^4.0.8",
     "next": "12.3.1",
     "next-redux-wrapper": "^8.0.0",
     "nextjs-progressbar": "^0.0.14",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-hook-form": "^7.36.0",
-    "react-icons": "^4.4.0",
     "react-redux": "^8.0.2",
+    "react-waypoint": "^10.3.0",
     "slugify": "^1.6.4",
-    "swr": "^1.3.0",
-    "use-debounce": "^8.0.4"
+    "swr": "^1.3.0"
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.7",
     "@types/node": "18.7.18",
     "@types/react": "18.0.20",
     "@types/react-dom": "18.0.6",
@@ -33,10 +35,8 @@
     "postcss": "^8.4.16",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.13",
+    "tailwind-scrollbar": "^2.0.1",
     "tailwindcss": "^3.1.8",
-    "typescript": "4.8.3",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "jest": "^27.4.5"
+    "typescript": "4.8.3"
   }
 }

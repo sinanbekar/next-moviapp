@@ -126,7 +126,8 @@ export function parseDetailPageData(
 
   const duration =
     (data as MovieDetails).runtime ??
-    (data as TvDetails).episode_run_time[0];
+    (data as TvDetails).episode_run_time[0] ??
+    0;
 
   const releaseDate = isMovie
     ? (data as MovieDetails).release_date
@@ -148,7 +149,7 @@ export function parseDetailPageData(
     genres: genreData,
     rating: data.vote_average,
     duration: duration,
-    durationFormatted: formatMinutes(duration),
+    durationFormatted: duration !== 0 ? formatMinutes(duration) : "",
     releaseDate: releaseDate,
     endDate: endDate,
     year: fullDateToYear(releaseDate),
@@ -193,7 +194,7 @@ export const getRouteData = (router: NextRouter) => {
   const sortVal =
     (router.query?.sort as string) ?? (isGenrePage ? "popular" : "trending");
 
-  const mediaTypeListPath = isMoviesPage
+    const mediaTypeListPath = isMoviesPage
     ? "/movies"
     : isTvPage
     ? "/tv"

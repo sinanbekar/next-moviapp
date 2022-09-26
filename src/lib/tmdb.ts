@@ -37,7 +37,7 @@ export class TMDB {
   }
 
   static profilePicPathToAbsoluteUrl(path: string) {
-    return `https://www.themoviedb.org/t/p/w276_and_h350_face/${path}`;
+    return `https://www.themoviedb.org/t/p/w150_and_h150_face/${path}`;
   }
 
   static apiFetch(endPoint: string, additionalParams: string[] = []) {

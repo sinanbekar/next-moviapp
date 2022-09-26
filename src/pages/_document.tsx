@@ -16,7 +16,7 @@ class MainDocument extends Document {
     return (
       <Html>
         <Head />
-        <body>
+        <body className="bg-[#030303] text-white">
           <Main />
           <NextScript />
           <div id="modal-root"></div>

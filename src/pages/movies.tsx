@@ -1,14 +1,8 @@
-import React from "react";
-import SingleItem from "@/components/SingleItem";
-import Slider from "@/components/Slider";
-import { parseSingleItemData } from "@/helpers/movi";
-import { TMDB } from "@/lib/tmdb";
-import Layout from "@/components/Layout";
-import InfiniteScroll from "@/components/InfiniteScroll";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { Movies } from "@/types/tmdb/popular";
-import { SeoHead } from "@/helpers/seo";
 import { useRouter } from "next/router";
+import MediaListingView from "@/views/MediaListingView";
+import { SeoHead } from "@/helpers/seo";
+import { TMDB } from "@/lib/tmdb";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const moviesData =
@@ -22,42 +16,28 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      moviesData,
+      mediaData: moviesData,
       tmdbQueryString,
     },
   };
 };
 
 const Movies = ({
-  moviesData,
+  mediaData,
   tmdbQueryString,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [moviesDataState, setMoviesDataState] =
-    React.useState<Movies>(moviesData);
   const router = useRouter();
-  React.useEffect(() => {
-    setMoviesDataState(moviesData);
-  }, [moviesData]);
 
   return (
-    <Layout>
+    <>
       <SeoHead
         title={`${
           router.query?.sort === "popular" ? "Popular" : "Trending"
         } Movies`}
         description="Explore trending, popular movies!"
       />
-      <Slider sliderItems={moviesDataState.results.slice(0, 4)} />
-      <div className="py-8 flex flex-wrap justify-between gap-4">
-        {moviesDataState.results.slice(4).map((data) => (
-          <SingleItem key={data.id} item={parseSingleItemData(data)} />
-        ))}
-        <InfiniteScroll
-          setDataState={setMoviesDataState}
-          tmdbQueryString={tmdbQueryString}
-        />
-      </div>
-    </Layout>
+      <MediaListingView {...{ mediaData, tmdbQueryString }} />
+    </>
   );
 };
 
