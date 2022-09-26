@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import MediaListingView from "@/views/MediaListingView";
-import { SeoHead } from "@/helpers/seo";
+import { NextSeo } from "next-seo";
 import { TMDB } from "@/lib/tmdb";
 
 export const getServerSideProps = async (
@@ -34,7 +34,7 @@ const TvShows = ({
 
   return (
     <>
-      <SeoHead
+      <NextSeo
         title={`${
           router.query?.sort === "popular" ? "Popular" : "Trending"
         } TV Shows`}

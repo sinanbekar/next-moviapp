@@ -38,3 +38,13 @@ export function pick<T, K extends keyof T>(obj: T, ...keys: K[]): Pick<T, K> {
   });
   return ret;
 }
+
+export const parseSlugToIdAndTitle = (slug: string) => {
+  const id = parseInt(slug.split("-")[0]);
+  const title = slug.slice(slug.indexOf("-") + 1);
+
+  return {
+    id: slug.includes("-") && !isNaN(id) ? id : 0,
+    title: title,
+  };
+};

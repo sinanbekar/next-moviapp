@@ -13,7 +13,7 @@ import { MovieDetails, TvDetails } from "@/types/tmdb/detail";
 import { Crew } from "@/types/tmdb";
 import { formatMinutes } from "@/helpers/generic";
 import { NextRouter } from "next/router";
-import { parseSlugToIdAndTitle } from "@/helpers/seo";
+import { parseSlugToIdAndTitle } from "@/helpers/generic";
 
 export function parseSingleItemData(data: MoviesResult | TvResult) {
   const isMovie = "first_air_date" in data ? false : true;

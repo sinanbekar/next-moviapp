@@ -1,8 +1,9 @@
 import { GetServerSidePropsContext } from "next";
+import { NextSeo } from "next-seo";
 import { InferGetServerSidePropsType } from "@/types/general";
 import MediaListingView from "@/views/MediaListingView";
 import { TMDB } from "@/lib/tmdb";
-import { parseSlugToIdAndTitle, SeoHead } from "@/helpers/seo";
+import { parseSlugToIdAndTitle} from "@/helpers/generic";
 import { detectGenre } from "@/helpers/movi";
 
 export const getServerSideProps = async (
@@ -50,7 +51,7 @@ const Genre = ({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <>
-      <SeoHead
+      <NextSeo
         title={`${genre.name} ${mediaType === "movie" ? "Movies" : "TV Shows"}`}
         description={`Explore ${genre.name} ${
           mediaType === "movie" ? "Movies" : "TV Shows"

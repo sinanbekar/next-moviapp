@@ -1,7 +1,8 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
-import { SeoHead } from "@/helpers/seo";
+import { DefaultSeo } from "next-seo";
+import seoConfig from "../config/seo";
 //import { wrapper } from "@/app/store";
 //import { Provider } from "react-redux";
 
@@ -10,7 +11,7 @@ function MoviApp({ Component, ...rest }: AppProps) {
 
   return (
     <>
-      <SeoHead />
+      <DefaultSeo {...seoConfig} />
       <NextNProgress
         color="#fde401" //moviyellow tailwind.config.js
         startPosition={0.3}
