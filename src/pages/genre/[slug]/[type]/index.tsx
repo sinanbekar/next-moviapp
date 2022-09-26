@@ -1,38 +1,29 @@
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import React from "react";
+import { GetServerSidePropsContext } from "next";
+import { NextSeo } from "next-seo";
+import { InferGetServerSidePropsType } from "@/types/general";
+import MediaListingView from "@/views/MediaListingView";
 import { TMDB } from "@/lib/tmdb";
-import Layout from "@/components/Layout";
-import Slider from "@/components/Slider";
-import SingleItem from "@/components/SingleItem";
-import InfiniteScroll from "@/components/InfiniteScroll";
-import { parseSlugToIdAndTitle, SeoHead } from "@/helpers/seo";
-import { isGenrePageSlug, parseSingleItemData } from "@/helpers/movi";
-import { Movies, TvShows } from "@/types/tmdb/popular";
-import { movieGenres, tvGenres } from "@/data/genres";
+import { parseSlugToIdAndTitle} from "@/helpers/generic";
+import { detectGenre } from "@/helpers/movi";
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
   const slugData = parseSlugToIdAndTitle(context.params?.slug as string);
   const mediaType = context.params?.type as string;
 
-  if (!isGenrePageSlug(slugData, mediaType)) {
+  const genre = detectGenre(slugData, mediaType);
+
+  if (!genre) {
     return {
       notFound: true,
     };
   }
 
-  const genreMeta = {
-    mediaType: mediaType,
-    genre: (mediaType === "movie" ? movieGenres : tvGenres).find(
-      (genre) => genre.id === slugData.id
-    ),
-  };
-
-  const genreData =
+  const mediaData =
     mediaType === "movie"
-      ? await TMDB.discoverMoviesByGenreId(slugData.id)
-      : mediaType === "tv"
-      ? await TMDB.discoverTvShowsByGenreId(slugData.id)
-      : { results: [] };
+      ? await TMDB.discoverMoviesByGenreId(genre.id)
+      : await TMDB.discoverTvShowsByGenreId(genre.id);
 
   const tmdbQueryString = `method=${
     mediaType === "movie"
@@ -44,47 +35,33 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      genreData,
+      mediaData,
+      mediaType,
       tmdbQueryString,
-      genreMeta,
+      genre,
     },
   };
 };
 
 const Genre = ({
-  genreData,
+  mediaData,
+  mediaType,
   tmdbQueryString,
-  genreMeta,
+  genre,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [genreDataState, setGenreDataState] = React.useState<Movies | TvShows>(
-    genreData
-  );
-
-  React.useEffect(() => {
-    setGenreDataState(genreData);
-  }, [genreData]);
-
   return (
-    <Layout>
-      <SeoHead
-        title={`${genreMeta.genre.name} ${
-          genreMeta.mediaType === "movie" ? "Movies" : "TV Shows"
-        }`}
-        description={`Explore ${genreMeta.genre.name} ${
-          genreMeta.mediaType === "movie" ? "Movies" : "TV Shows"
+    <>
+      <NextSeo
+        title={`${genre.name} ${mediaType === "movie" ? "Movies" : "TV Shows"}`}
+        description={`Explore ${genre.name} ${
+          mediaType === "movie" ? "Movies" : "TV Shows"
         }`}
       />
-      <Slider sliderItems={genreDataState.results.slice(0, 4)} />
-      <div className="py-8 flex flex-wrap gap-4">
-        {genreDataState.results.slice(4).map((data) => (
-          <SingleItem key={data.id} item={parseSingleItemData(data)} />
-        ))}
-        <InfiniteScroll
-          setDataState={setGenreDataState}
-          tmdbQueryString={tmdbQueryString}
-        />
-      </div>
-    </Layout>
+      <MediaListingView
+        mediaData={mediaData}
+        tmdbQueryString={tmdbQueryString}
+      />
+    </>
   );
 };
 

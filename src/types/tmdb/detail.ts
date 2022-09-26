@@ -9,7 +9,7 @@ import {
   Season,
   Credits,
   Videos,
-} from "@/types/tmdb/generic";
+} from "@/types/tmdb";
 
 import { WatchProviders } from "@/types/tmdb/watch-providers";
 

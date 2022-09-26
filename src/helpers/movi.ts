@@ -10,11 +10,10 @@ import {
 } from "@/types/parsed-tmdb";
 import { TMDB } from "@/lib/tmdb";
 import { MovieDetails, TvDetails } from "@/types/tmdb/detail";
-import { Crew } from "@/types/tmdb/generic";
+import { Crew } from "@/types/tmdb";
 import { formatMinutes } from "@/helpers/generic";
 import { NextRouter } from "next/router";
-import { SlugData } from "@/types/generic";
-import { parseSlugToIdAndTitle } from "@/helpers/seo";
+import { parseSlugToIdAndTitle } from "@/helpers/generic";
 
 export function parseSingleItemData(data: MoviesResult | TvResult) {
   const isMovie = "first_air_date" in data ? false : true;
@@ -42,11 +41,11 @@ export function parseSingleItemData(data: MoviesResult | TvResult) {
   return returnData;
 }
 
-export function parseDetailPageData(
-  data: MovieDetails | TvDetails | null
-): DetailPageData | null {
-  if (!data) return null;
 
+export function parseDetailPageData(
+  data: MovieDetails | TvDetails,
+): DetailPageData  {
+ 
   const isMovie = "first_air_date" in data ? false : true;
 
   const directorData: SingleCrew[] = data.credits.crew
@@ -126,7 +125,8 @@ export function parseDetailPageData(
 
   const duration =
     (data as MovieDetails).runtime ??
-    (data as TvDetails).episode_run_time[0];
+    (data as TvDetails).episode_run_time[0] ??
+    0;
 
   const releaseDate = isMovie
     ? (data as MovieDetails).release_date
@@ -148,7 +148,7 @@ export function parseDetailPageData(
     genres: genreData,
     rating: data.vote_average,
     duration: duration,
-    durationFormatted: formatMinutes(duration),
+    durationFormatted: duration !== 0 ? formatMinutes(duration) : "",
     releaseDate: releaseDate,
     endDate: endDate,
     year: fullDateToYear(releaseDate),
@@ -193,7 +193,7 @@ export const getRouteData = (router: NextRouter) => {
   const sortVal =
     (router.query?.sort as string) ?? (isGenrePage ? "popular" : "trending");
 
-  const mediaTypeListPath = isMoviesPage
+    const mediaTypeListPath = isMoviesPage
     ? "/movies"
     : isTvPage
     ? "/tv"
@@ -204,7 +204,7 @@ export const getRouteData = (router: NextRouter) => {
     : isTvPage
     ? "tv"
     : null;
-
+    
   return {
     genrePathName,
     isMoviesPage,
@@ -217,29 +217,34 @@ export const getRouteData = (router: NextRouter) => {
   };
 };
 
+type SlugData = {
+  id: number;
+  title: string;
+};
+
 export const isDetailPageSlug = (
-  data: MovieDetails | TvDetails | null,
+  data: MovieDetails | TvDetails,
   slugData: SlugData
 ) => {
-  if (!data) return null;
-
   return (
     slugData.title ===
     slugify((data as MovieDetails).title ?? (data as TvDetails).name)
   );
 };
 
-export const isGenrePageSlug = (slugData: SlugData, mediaType: string) => {
+export const detectGenre = (slugData: SlugData, mediaType: string) => {
+  if (slugData.id === 0) return undefined;
+
   const movieGenres: { id: number; name: string }[] =
     require("@/data/genres").movieGenres;
   const tvGenres: { id: number; name: string }[] =
     require("@/data/genres").tvGenres;
+
   return (
-    (mediaType === "movie" &&
-      slugify(movieGenres.find((genre) => genre.id === slugData.id)?.name) ===
-        slugify(slugData.title)) ||
-    (mediaType === "tv" &&
-      slugify(tvGenres.find((genre) => genre.id === slugData.id)?.name) ===
-        slugify(slugData.title))
+    mediaType === "movie" ? movieGenres : mediaType === "tv" ? tvGenres : []
+  ).find(
+    (genre) =>
+      genre.id === slugData.id &&
+      slugify(genre.name) === slugify(slugData.title)
   );
 };

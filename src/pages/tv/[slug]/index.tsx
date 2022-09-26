@@ -1,21 +1,29 @@
-import { InferGetServerSidePropsType, GetServerSideProps } from "next";
+import { GetServerSidePropsContext } from "next";
+import { NextSeo } from "next-seo";
+import { InferGetServerSidePropsType } from "@/types/general";
+import MediaDetailsView from "@/views/MediaDetailsView";
 import { parseDetailPageData, isDetailPageSlug } from "@/helpers/movi";
-import DetailPage from "@/components/DetailPage";
-import { parseSlugToIdAndTitle, SeoHead } from "@/helpers/seo";
-import { TMDB, TMDBIdNotFound } from "lib/tmdb";
-import { TvDetails } from "@/types/tmdb/detail";
+import { parseSlugToIdAndTitle } from "@/helpers/generic";
+import { TMDB, TMDBIdNotFound } from "@/lib/tmdb";
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
   const slugData = parseSlugToIdAndTitle(context.params?.slug as string);
-  let rawData: TvDetails | null = null;
 
+  let rawData;
   try {
+    if (slugData.id === 0) {
+      throw new TMDBIdNotFound();
+    }
     rawData = await TMDB.getTvShowDetailsById(slugData.id);
   } catch (e) {
     if (e instanceof TMDBIdNotFound) {
       return {
         notFound: true,
       };
+    } else {
+      throw e;
     }
   }
 
@@ -25,26 +33,33 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const parsedData = parseDetailPageData(rawData);
+  const detailsData = parseDetailPageData(rawData);
 
   return {
     props: {
-      parsedData,
+      detailsData,
     },
   };
 };
 
 export default function TvShowDetail({
-  parsedData,
+  detailsData,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
-      <SeoHead
-        title={parsedData.title}
-        description={`${parsedData.title} info, rating. ${parsedData.overview}`}
-        imgUrl={parsedData.posterImageUrl}
+      <NextSeo
+        title={detailsData.title}
+        description={`${detailsData.title} info, rating. ${detailsData.overview}`}
+        openGraph={{
+          images: [
+            {
+              url: detailsData.posterImageUrl,
+              alt: detailsData.title,
+            },
+          ],
+        }}
       />
-      <DetailPage parsedData={parsedData} />
+      <MediaDetailsView detailsData={detailsData} />
     </>
   );
 }

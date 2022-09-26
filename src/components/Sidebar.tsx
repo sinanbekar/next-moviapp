@@ -1,11 +1,24 @@
 import Link from "next/link";
-
+import cn from "classnames";
+import ActiveLink from "./ActiveLink";
 import { useRouter } from "next/router";
 import { tvGenres, movieGenres } from "@/data/genres";
 import { getRouteData } from "@/helpers/movi";
 import { slugify } from "@/helpers/generic";
+import TMDBAttribution from "./TMDBAttribution";
 
-const Sidebar: React.FC = () => {
+type GenreLinkProps = {
+  genre: {
+    id: number;
+    name: string;
+  };
+};
+
+type SortLinkProps = {
+  value: string;
+};
+
+const Sidebar = () => {
   const router = useRouter();
 
   const {
@@ -19,113 +32,62 @@ const Sidebar: React.FC = () => {
     mediaTypeListPath,
   } = getRouteData(router);
 
-  const SidebarGenresSub = () => {
-    return (
-      <>
-        <h4 className={genreId === 0 ? "text-moviyellow" : ""}>
-          <Link
-            href={{
-              pathname: mediaTypeListPath,
-              query: {},
-            }}
-          >
-            All
-          </Link>
-        </h4>
-        {isMoviesPage
-          ? movieGenres.map((data) => (
-              <h4
-                key={data.id}
-                className={genreId === data.id ? "text-moviyellow" : ""}
-              >
-                <Link
-                  href={{
-                    pathname: genrePathName,
-                    query: {
-                      slug: `${data.id}-${slugify(data.name)}`,
-                      type: currentPageMediaType,
-                    },
-                  }}
-                >
-                  {data.name}
-                </Link>
-              </h4>
-            ))
-          : isTvPage &&
-            tvGenres.map((data) => (
-              <h4
-                key={data.id}
-                className={genreId === data.id ? "text-moviyellow" : ""}
-              >
-                <Link
-                  href={{
-                    pathname: genrePathName,
-                    query: {
-                      slug: `${data.id}-${slugify(data.name)}`,
-                      type: currentPageMediaType,
-                    },
-                  }}
-                >
-                  {data.name}
-                </Link>
-              </h4>
-            ))}
-      </>
-    );
-  };
+  const GenreLink = ({ genre }: GenreLinkProps) => (
+    <ActiveLink
+      activeClassName="text-moviyellow"
+      href={genrePathName}
+      as={`/genre/${genre.id}-${slugify(genre.name)}/${currentPageMediaType}`}
+    >
+      <a>{genre.name}</a>
+    </ActiveLink>
+  );
 
-  const SidebarMoviesSub = () => {
-    return (
-      <>
-        {!isGenrePage && (
-          <h4 className={sortVal === "trending" ? "text-moviyellow" : ""}>
-            <Link
-              href={{
-                pathname: router.pathname,
-                query: { ...router.query, sort: "trending" },
-              }}
-            >
-              Trending
-            </Link>
-          </h4>
-        )}
-
-        <h4 className={sortVal === "popular" ? "text-moviyellow" : ""}>
-          <Link
-            href={{
-              pathname: router.pathname,
-              query: { ...router.query, sort: "popular" },
-            }}
-          >
-            Popular
-          </Link>
-        </h4>
-      </>
-    );
-  };
+  const SortLink = ({ value }: SortLinkProps) => (
+    <h4 className={cn({ "text-moviyellow": sortVal === value.toLowerCase() })}>
+      <Link
+        href={{
+          pathname: router.pathname,
+          query: { ...router.query, sort: value.toLowerCase() },
+        }}
+      >
+        {value}
+      </Link>
+    </h4>
+  );
 
   return (
-    <>
-      <div>
-        <h3 className="text-4xl">
-          {isTvPage ? "TV Shows" : isMoviesPage && "Movies"}
-        </h3>
+    <div className="sticky top-0 hidden h-screen w-[15vw] flex-col gap-y-8 md:flex">
+      <h3 className="text-4xl">
+        {isTvPage ? "TV Shows" : isMoviesPage && "Movies"}
+      </h3>
+      <div className="flex flex-col gap-3 text-2xl">
+        {!isGenrePage && <SortLink value="Trending" />}
+        <SortLink value="Popular" />
       </div>
+      <div className="flex flex-col">
+        <h3 className="text-3xl">Genres</h3>
 
-      <div className="mt-12 text-2xl flex flex-col gap-3">
-        <SidebarMoviesSub />
-      </div>
-
-      <div className="pt-12">
-        <div>
-          <h3 className="text-3xl">Genres</h3>
+        <div className="mt-4 h-[50vh] snap-y snap-proximity overflow-hidden scrollbar hover:overflow-y-scroll hover:scrollbar-thin hover:scrollbar-track-transparent hover:scrollbar-thumb-gray-600/50 hover:scrollbar-thumb-rounded-full">
+          <div className="flex flex-col gap-y-2.5 text-xl">
+            <h4
+              className={cn({ "text-moviyellow": genreId === 0 }, "snap-start")}
+            >
+              <Link href={mediaTypeListPath ?? "/movies"}>All</Link>
+            </h4>
+            {(isMoviesPage ? movieGenres : isTvPage ? tvGenres : []).map(
+              (genre) => (
+                <span key={genre.id} className="snap-start">
+                  <GenreLink genre={genre} />
+                </span>
+              )
+            )}
+          </div>
         </div>
-
-        <div className="mt-8 text-2xl flex flex-col gap-3 max-h-96 overflow-y-scroll">
-          <SidebarGenresSub />
-        </div>
       </div>
-    </>
+      <div className="absolute bottom-4 flex flex-col gap-y-3">
+        <TMDBAttribution />
+      </div>
+    </div>
   );
 };
 

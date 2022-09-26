@@ -58,15 +58,10 @@ export interface DetailPageData {
   creatorData: SingleCrew[] | [];
   castData: SingleCast[] | [];
 }
-
-export interface MultiSearch {
-  movies: SearchSub[];
-  tvShows: SearchSub[];
-}
-
-export interface SearchSub {
+export interface SearchItem {
   id: number;
   title: string;
+  mediaType: string;
   redirectUrl: string;
   year: string;
   posterUrl: string;
