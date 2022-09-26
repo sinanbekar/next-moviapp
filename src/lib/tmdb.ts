@@ -1,5 +1,5 @@
 import { MovieDetails, TvDetails } from "@/types/tmdb/detail";
-import { Search, TMDBResponse } from "@/types/tmdb/generic";
+import { Search, TMDBResponse } from "@/types/tmdb";
 import { Movies, TvShows } from "@/types/tmdb/popular";
 
 export class TMDB {
@@ -59,10 +59,11 @@ export class TMDB {
         return parsedResponse;
       })
       .catch((error) => {
-        if (error.status_code === 6) {
-          throw new TMDBIdNotFound();
+        if (error.status_code === 6 || error.status_code === 34) {
+          throw new TMDBIdNotFound(JSON.stringify(error));
+        } else {
+          throw new TMDBError(JSON.stringify(error));
         }
-        throw new TMDBError(JSON.stringify(error));
       });
   }
 
@@ -70,7 +71,9 @@ export class TMDB {
     return this.apiFetch(this.discoverMoviesEndpoint, [`page=${page}`]);
   }
 
-  static async discoverTvShows(page: number = 1): Promise<TMDBResponse<TvShows>> {
+  static async discoverTvShows(
+    page: number = 1
+  ): Promise<TMDBResponse<TvShows>> {
     return this.apiFetch(this.discoverTVEndpoint, [`page=${page}`]);
   }
 
@@ -174,6 +177,6 @@ export class TMDBError extends Error {
 export class TMDBIdNotFound extends TMDBError {
   constructor(msg: string = "") {
     super(msg);
-    Object.setPrototypeOf(this, TMDBError.prototype);
+    Object.setPrototypeOf(this, TMDBIdNotFound.prototype);
   }
 }

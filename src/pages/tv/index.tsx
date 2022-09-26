@@ -1,11 +1,13 @@
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import MediaListingView from "@/views/MediaListingView";
 import { SeoHead } from "@/helpers/seo";
 import { TMDB } from "@/lib/tmdb";
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const tvShowsData =
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const mediaData =
     context.query?.sort === "popular"
       ? await TMDB.getPopularTvShows()
       : await TMDB.getTrendingTvShows();
@@ -18,7 +20,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      mediaData: tvShowsData,
+      mediaData: mediaData,
       tmdbQueryString,
     },
   };
@@ -38,7 +40,10 @@ const TvShows = ({
         } TV Shows`}
         description="Explore trending, popular tv shows!"
       />
-      <MediaListingView {...{ mediaData, tmdbQueryString }} />
+      <MediaListingView
+        mediaData={mediaData}
+        tmdbQueryString={tmdbQueryString}
+      />
     </>
   );
 };

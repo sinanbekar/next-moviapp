@@ -1,11 +1,11 @@
-import { SlugData } from "@/types/generic";
 import Head from "next/head";
 
-export const parseSlugToIdAndTitle = (slug: string): SlugData => {
-  const id = slug.split("-")[0];
+export const parseSlugToIdAndTitle = (slug: string) => {
+  const id = parseInt(slug.split("-")[0]);
   const title = slug.slice(slug.indexOf("-") + 1);
+
   return {
-    id: Number(id),
+    id: slug.includes("-") && !isNaN(id) ? id : 0,
     title: title,
   };
 };

@@ -1,21 +1,28 @@
-import { InferGetServerSidePropsType, GetServerSideProps } from "next";
+import { GetServerSidePropsContext } from "next";
+import { InferGetServerSidePropsType } from "@/types/general";
 import MediaDetailsView from "@/views/MediaDetailsView";
 import { parseDetailPageData, isDetailPageSlug } from "@/helpers/movi";
 import { parseSlugToIdAndTitle, SeoHead } from "@/helpers/seo";
 import { TMDB, TMDBIdNotFound } from "@/lib/tmdb";
-import { TvDetails } from "@/types/tmdb/detail";
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
   const slugData = parseSlugToIdAndTitle(context.params?.slug as string);
-  let rawData: TvDetails | null = null;
 
+  let rawData;
   try {
+    if (slugData.id === 0) {
+      throw new TMDBIdNotFound();
+    }
     rawData = await TMDB.getTvShowDetailsById(slugData.id);
   } catch (e) {
     if (e instanceof TMDBIdNotFound) {
       return {
         notFound: true,
       };
+    } else {
+      throw e;
     }
   }
 
@@ -25,11 +32,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const parsedData = parseDetailPageData(rawData);
+  const detailsData = parseDetailPageData(rawData);
 
   return {
     props: {
-      detailsData: parsedData,
+      detailsData,
     },
   };
 };
@@ -44,7 +51,7 @@ export default function TvShowDetail({
         description={`${detailsData.title} info, rating. ${detailsData.overview}`}
         imgUrl={detailsData.posterImageUrl}
       />
-      <MediaDetailsView {...{ detailsData }} />
+      <MediaDetailsView detailsData={detailsData} />
     </>
   );
 }

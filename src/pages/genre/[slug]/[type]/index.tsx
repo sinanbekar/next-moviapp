@@ -1,33 +1,28 @@
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { GetServerSidePropsContext } from "next";
+import { InferGetServerSidePropsType } from "@/types/general";
 import MediaListingView from "@/views/MediaListingView";
 import { TMDB } from "@/lib/tmdb";
 import { parseSlugToIdAndTitle, SeoHead } from "@/helpers/seo";
-import { isGenrePageSlug } from "@/helpers/movi";
-import { movieGenres, tvGenres } from "@/data/genres";
+import { detectGenre } from "@/helpers/movi";
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
   const slugData = parseSlugToIdAndTitle(context.params?.slug as string);
   const mediaType = context.params?.type as string;
 
-  if (!isGenrePageSlug(slugData, mediaType)) {
+  const genre = detectGenre(slugData, mediaType);
+
+  if (!genre) {
     return {
       notFound: true,
     };
   }
 
-  const genreMeta = {
-    mediaType: mediaType,
-    genre: (mediaType === "movie" ? movieGenres : tvGenres).find(
-      (genre) => genre.id === slugData.id
-    ),
-  };
-
-  const genreData =
+  const mediaData =
     mediaType === "movie"
-      ? await TMDB.discoverMoviesByGenreId(slugData.id)
-      : mediaType === "tv"
-      ? await TMDB.discoverTvShowsByGenreId(slugData.id)
-      : { results: [] };
+      ? await TMDB.discoverMoviesByGenreId(genre.id)
+      : await TMDB.discoverTvShowsByGenreId(genre.id);
 
   const tmdbQueryString = `method=${
     mediaType === "movie"
@@ -39,29 +34,32 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      mediaData: genreData,
+      mediaData,
+      mediaType,
       tmdbQueryString,
-      genreMeta,
+      genre,
     },
   };
 };
 
 const Genre = ({
   mediaData,
+  mediaType,
   tmdbQueryString,
-  genreMeta,
+  genre,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <>
       <SeoHead
-        title={`${genreMeta.genre.name} ${
-          genreMeta.mediaType === "movie" ? "Movies" : "TV Shows"
-        }`}
-        description={`Explore ${genreMeta.genre.name} ${
-          genreMeta.mediaType === "movie" ? "Movies" : "TV Shows"
+        title={`${genre.name} ${mediaType === "movie" ? "Movies" : "TV Shows"}`}
+        description={`Explore ${genre.name} ${
+          mediaType === "movie" ? "Movies" : "TV Shows"
         }`}
       />
-      <MediaListingView {...{ mediaData, tmdbQueryString }} />
+      <MediaListingView
+        mediaData={mediaData}
+        tmdbQueryString={tmdbQueryString}
+      />
     </>
   );
 };
