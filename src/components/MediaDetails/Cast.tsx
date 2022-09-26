@@ -24,8 +24,9 @@ const Cast = ({
         <div className="mr-4 hidden justify-end gap-x-8 md:flex">
           <button
             className={cn(
-              { "pointer-events-none fill-white/20": !isScrollableToLeft },
-              "fill-white/90 transition-all hover:fill-white"
+              "transition-all",
+              { "pointer-events-none fill-white/30": !isScrollableToLeft },
+              { "fill-white/80 hover:fill-white": isScrollableToLeft }
             )}
             onClick={scrollToLeft}
           >
@@ -40,8 +41,9 @@ const Cast = ({
           </button>
           <button
             className={cn(
-              { "pointer-events-none fill-white/20": !isScrollableToRight },
-              "fill-white/90 transition-all hover:fill-white"
+              "transition-all",
+              { "pointer-events-none fill-white/30": !isScrollableToRight },
+              { "fill-white/80 hover:fill-white": isScrollableToRight }
             )}
             onClick={scrollToRight}
           >
