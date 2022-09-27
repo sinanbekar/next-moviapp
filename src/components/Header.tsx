@@ -6,14 +6,15 @@ import React, { Fragment, FocusEvent } from "react";
 import ActiveLink from "./ActiveLink";
 import { Popover, Transition } from "@headlessui/react";
 import SearchBox from "./SearchBox";
+import { useSession, signIn, signOut } from "next-auth/react";
+import ImageWithShimmer from "./ImageWithShimmer";
 
 const Header = () => {
+  const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
   const { events: routerEvents } = useRouter();
   const { isSticky } = useStickyHeader({ scrollTrigger: 48 });
-
-  const isSignedIn = false; // TODO
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -113,11 +114,8 @@ const Header = () => {
 
           <hr className="my-2 mb-4 opacity-30 md:hidden" />
           <div className="hidden md:ml-8 md:block">
-            {!isSignedIn ? (
-              <button
-                disabled
-                className="cursor-not-allowed font-semibold text-white/30"
-              >
+            {!(session && session.user) ? (
+              <button onClick={() => signIn('google')} className="font-semibold">
                 Sign In
               </button>
             ) : (
@@ -125,20 +123,30 @@ const Header = () => {
                 {({ open }) => (
                   <>
                     <Popover.Button className="hidden items-center gap-x-1 md:flex">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="h-8 w-8"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                      {session.user!.image && session.user!.name ? (
+                        <ImageWithShimmer
+                          src={session.user!.image}
+                          height={32}
+                          width={32}
+                          className="rounded-full"
+                          alt={session.user!.name}
                         />
-                      </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="h-8 w-8"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                      )}
 
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +156,7 @@ const Header = () => {
                         stroke="currentColor"
                         className={cn(
                           { "rotate-180 transform": open },
-                          "h-6 w-6"
+                          "h-4 w-4"
                         )}
                       >
                         <path
@@ -169,17 +177,20 @@ const Header = () => {
                     >
                       <Popover.Panel className="absolute right-0 top-8 z-10 hidden w-52 rounded-md bg-movidark/95 py-3 md:block">
                         <span className="px-4 font-bold text-white/70">
-                          user
+                          {session.user!.name ?? "user"}
                         </span>
 
-                        <Link href="/">
+                        <Link href="/profile">
                           <a className="mt-2 inline-block w-full px-4 py-1 text-sm text-white/80 hover:bg-white/20">
                             Profile
                           </a>
                         </Link>
                         <hr className="my-1 opacity-50" />
                         <div className="hover:bg-white/20">
-                          <button className="px-4 py-1 text-sm text-white/80 ">
+                          <button
+                            onClick={() => signOut()}
+                            className="px-4 py-1 text-sm text-white/80 "
+                          >
                             Sign Out
                           </button>
                         </div>
@@ -193,30 +204,40 @@ const Header = () => {
 
           {/* mobile-only */}
           <div className="flex flex-col pb-4 md:hidden">
-            {isSignedIn ? (
+            {session && session.user ? (
               <div className="flex flex-col gap-y-4">
-                <Link href="/">
+                <Link href="/profile">
                   <a className="flex items-center gap-x-2 py-1">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="h-8 w-8"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                    {session.user.image && session.user.name ? (
+                      <ImageWithShimmer
+                        src={session.user.image}
+                        height={32}
+                        width={32}
+                        className="rounded-full"
+                        alt={session.user.name}
                       />
-                    </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="h-8 w-8"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                    )}
                     <span className="text-sm font-bold text-white/70">
-                      user
+                      {session.user.name ?? "user"}
                     </span>
                   </a>
                 </Link>
-                <button className="flex gap-x-2 py-1">
+                <button onClick={() => signOut()} className="flex gap-x-2 py-1">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -239,8 +260,8 @@ const Header = () => {
             ) : (
               <div className="mx-auto">
                 <button
-                  disabled
-                  className="rounded-md bg-moviyellow/80 px-6 py-2 font-semibold text-black opacity-10"
+                  onClick={() => signIn('google')}
+                  className="rounded-md bg-moviyellow/80 px-6 py-2 font-semibold text-black"
                 >
                   Sign In
                 </button>
