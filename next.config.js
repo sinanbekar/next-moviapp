@@ -4,6 +4,6 @@ module.exports = {
   swcMinify: true,
   images: {
     unoptimized: true,
-    domains: ["*.themoviedb.org", "*.tmdb.org"],
+    domains: ["*.themoviedb.org", "*.tmdb.org", "*.googleusercontent.com"],
   },
 };
