@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { Fragment, FocusEvent } from "react";
 import ActiveLink from "./ActiveLink";
-import { Popover, Transition } from "@headlessui/react";
+import { Menu, Transition } from "@headlessui/react";
 import SearchBox from "./SearchBox";
 import { useSession, signIn, signOut } from "next-auth/react";
 import ImageWithShimmer from "./ImageWithShimmer";
@@ -63,11 +63,13 @@ const Header = () => {
 
           <button
             onClick={toggleMenu}
+            aria-expanded={isMenuOpen}
             className={cn("block md:hidden", {
               "hidden sm:block": isSearchFocused,
             })}
           >
             <svg
+              aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -81,10 +83,12 @@ const Header = () => {
                 d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
               />
             </svg>
+            <span className="sr-only">Toggle navigation</span>
           </button>
         </div>
 
         <nav
+          aria-label="Main navigation"
           className={cn(
             {
               "invisible h-0 opacity-0": !isMenuOpen,
@@ -106,14 +110,14 @@ const Header = () => {
             </li>
 
             <li>
-              <span className="block cursor-not-allowed py-2 text-white/30">
+              <span className="block cursor-not-allowed py-2 text-white/50">
                 Discover
               </span>
             </li>
           </ul>
 
           <hr className="my-2 mb-4 opacity-30 md:hidden" />
-          <div className="hidden md:ml-8 md:block">
+          <div className="relative hidden md:ml-8 md:block">
             {!(session && session.user) ? (
               <button
                 onClick={() => signIn("google")}
@@ -122,10 +126,10 @@ const Header = () => {
                 Sign In
               </button>
             ) : (
-              <Popover className="relative">
+              <Menu>
                 {({ open }) => (
                   <>
-                    <Popover.Button className="hidden items-center gap-x-1 md:flex">
+                    <Menu.Button className="hidden items-center gap-x-1 md:flex">
                       {session.user!.image && session.user!.name ? (
                         <ImageWithShimmer
                           src={session.user!.image}
@@ -136,6 +140,7 @@ const Header = () => {
                         />
                       ) : (
                         <svg
+                          aria-hidden="true"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
                           viewBox="0 0 24 24"
@@ -152,6 +157,7 @@ const Header = () => {
                       )}
 
                       <svg
+                        aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -168,7 +174,7 @@ const Header = () => {
                           d="M19.5 8.25l-7.5 7.5-7.5-7.5"
                         />
                       </svg>
-                    </Popover.Button>
+                    </Menu.Button>
                     <Transition
                       as={Fragment}
                       enter="transition ease-out duration-200"
@@ -178,28 +184,47 @@ const Header = () => {
                       leaveFrom="opacity-100 translate-y-0"
                       leaveTo="opacity-0 translate-y-1"
                     >
-                      <Popover.Panel className="absolute right-0 top-8 z-10 hidden w-52 rounded-md bg-movidark/95 py-3 md:block">
+                      <Menu.Items className="absolute right-0 top-8 z-10 hidden w-52 rounded-md bg-movidark/95 py-3 md:block">
                         <span className="px-4 font-bold text-white/70">
                           {session.user!.name ?? "user"}
                         </span>
-
-                        <Link href="/profile">
-                          <a className="mt-2 inline-block w-full px-4 py-1 text-sm text-white/80 hover:bg-white/20">
-                            Profile
-                          </a>
+                        <Link href="/profile" passHref>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <a
+                                className={cn(
+                                  "mt-2 inline-block w-full px-4 py-1 text-sm text-white/80",
+                                  {
+                                    "bg-white/20": active,
+                                  }
+                                )}
+                              >
+                                Profile
+                              </a>
+                            )}
+                          </Menu.Item>
                         </Link>
                         <hr className="my-1 opacity-50" />
-                        <div
-                          onClick={() => signOut()}
-                          className="cursor-pointer px-4 py-1 text-sm text-white/80 hover:bg-white/20"
-                        >
-                          <span>Sign Out</span>
-                        </div>
-                      </Popover.Panel>
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              onClick={() => signOut()}
+                              className={cn(
+                                "w-full px-4 py-1 text-start text-sm text-white/80",
+                                {
+                                  "bg-white/20": active,
+                                }
+                              )}
+                            >
+                              Sign Out
+                            </button>
+                          )}
+                        </Menu.Item>
+                      </Menu.Items>
                     </Transition>
                   </>
                 )}
-              </Popover>
+              </Menu>
             )}
           </div>
 
@@ -219,6 +244,7 @@ const Header = () => {
                       />
                     ) : (
                       <svg
+                        aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -240,6 +266,7 @@ const Header = () => {
                 </Link>
                 <button onClick={() => signOut()} className="flex gap-x-2 py-1">
                   <svg
+                    aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"

@@ -22,7 +22,7 @@ interface MediaDetailsViewProps {
 
 function MediaDetailsView({ detailsData }: MediaDetailsViewProps) {
   const router = useRouter();
-  
+
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const closeModal = () => setIsModalOpen(false);
 
@@ -51,7 +51,6 @@ function MediaDetailsView({ detailsData }: MediaDetailsViewProps) {
       );
     }
   }, [router.isReady, router.query, router.asPath]);
-
 
   return (
     <>
@@ -130,6 +129,7 @@ function MediaDetailsView({ detailsData }: MediaDetailsViewProps) {
               <Dialog.Title className="text-lg font-bold">{`${detailsData.title} Trailer`}</Dialog.Title>
               <button className="absolute right-4 top-4" onClick={closeModal}>
                 <svg
+                  aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -143,6 +143,7 @@ function MediaDetailsView({ detailsData }: MediaDetailsViewProps) {
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
+                <span className="sr-only">Close the modal</span>
               </button>
               {detailsData.trailerUrl && (
                 <iframe

@@ -1,6 +1,7 @@
 const TMDBAttribution = () => (
   <div className="flex flex-col items-center gap-y-3">
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 190.24 81.52"
       className="h-5 w-auto"

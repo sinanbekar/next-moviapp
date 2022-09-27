@@ -64,7 +64,9 @@ const Carousel = ({ sliderItems }: Props) => {
                   <figcaption className="pointer absolute top-1/2 -mt-4 -translate-y-1/2 px-10 md:px-24">
                     <Link href={data.redirectSlug}>
                       <a>
-                        <span className="text-2xl md:text-5xl">{data.title}</span>
+                        <span className="text-2xl md:text-5xl">
+                          {data.title}
+                        </span>
                         <p className="w-full pt-4 text-white/70 line-clamp-2 md:w-3/5 md:line-clamp-3">
                           {data.overview}
                         </p>
@@ -73,6 +75,7 @@ const Carousel = ({ sliderItems }: Props) => {
                     <div className="mt-6 md:mt-8">
                       <WatchTrailerButton
                         redirectUrl={`${data.redirectSlug}?showTrailerModal=true`}
+                        ariaLabel={`Watch trailer for ${data.title}`}
                       />
                     </div>
                   </figcaption>

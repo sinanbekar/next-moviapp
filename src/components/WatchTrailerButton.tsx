@@ -5,12 +5,14 @@ import cn from "classnames";
 interface WatchTrailerButtonProps {
   redirectUrl?: string;
   handle?: any;
+  ariaLabel?: string;
 }
 
-const WatchTrailerButton: React.FC<WatchTrailerButtonProps> = ({
+const WatchTrailerButton = ({
   redirectUrl,
   handle,
-}) => {
+  ariaLabel,
+}: WatchTrailerButtonProps) => {
   const isAnchorLink = Boolean(redirectUrl);
 
   return (
@@ -23,6 +25,7 @@ const WatchTrailerButton: React.FC<WatchTrailerButtonProps> = ({
       )}
     >
       <button
+        aria-label={ariaLabel}
         {...(handle ? { onClick: handle } : undefined)}
         className={cn(
           {

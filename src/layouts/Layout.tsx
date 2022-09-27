@@ -11,7 +11,7 @@ function Layout({ children }: Props) {
       <Header />
       <div className="mx-auto my-4 flex gap-x-8 px-4 md:px-8 2xl:container">
         <Sidebar />
-        <div className="w-full">{children}</div>
+        <main className="w-full">{children}</main>
       </div>
     </>
   );

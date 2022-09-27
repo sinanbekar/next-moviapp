@@ -28,7 +28,7 @@ const Overview = ({ overview }: Pick<DetailPageData, "overview">) => {
 
   return overview ? (
     <div className="flex flex-col gap-y-2">
-      <h4 className="text-lg font-semibold">Overview</h4>
+      <h3 className="text-lg font-semibold">Overview</h3>
       <p
         ref={measuredRef}
         className={cn("text-white/70 transition-all", {
@@ -46,6 +46,7 @@ const Overview = ({ overview }: Pick<DetailPageData, "overview">) => {
         >
           <span className="text-sm font-bold text-white/70">Read more</span>
           <svg
+            aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"

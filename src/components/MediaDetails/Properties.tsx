@@ -39,18 +39,18 @@ const Properties = ({
     <div className="flex max-w-lg justify-between">
       {creatorData.length !== 0 && (
         <div className="flex-1">
-          <span className="block font-bold">
+          <h3 className="block font-bold">
             {creatorData.length > 1 ? "Creators" : "Creator"}
-          </span>
+          </h3>
           <span className="block text-white/70">{creators}</span>
         </div>
       )}
 
       {directorData.length !== 0 && (
         <div className="flex-1">
-          <span className="block font-bold">
+          <h3 className="block font-bold">
             {directorData.length > 1 ? "Directors" : "Director"}
-          </span>
+          </h3>
           <span className="block text-white/70">{directors}</span>
         </div>
       )}

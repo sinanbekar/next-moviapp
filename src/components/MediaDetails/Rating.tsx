@@ -7,6 +7,7 @@ const Rating = ({
   isReleased && rating > 0 ? (
     <div className="flex items-center gap-x-1">
       <svg
+        aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
         fill="currentColor"
@@ -18,10 +19,11 @@ const Rating = ({
           clipRule="evenodd"
         />
       </svg>
-      <span className="text-lg font-semibold">
+      <span aria-hidden="true" className="text-lg font-semibold">
         {rating.toFixed(1)}
-        <span className="text-base text-white/70">{" / 10"}</span>
+        <span className="text-base text-white/70">&nbsp;/&nbsp;10</span>
       </span>
+      <span className="sr-only">Rated {rating.toFixed(1)} out of 10</span>
     </div>
   ) : (
     <></>
