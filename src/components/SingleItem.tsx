@@ -30,6 +30,7 @@ const SingleItem = ({ item }: Props) => {
               {item.rating > 0 && (
                 <div className="flex items-center gap-x-1">
                   <svg
+                    aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                     fill="currentColor"
@@ -41,11 +42,14 @@ const SingleItem = ({ item }: Props) => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="text-sm md:text-base">
+                  <span aria-hidden="true" className="text-sm md:text-base">
                     {item.rating.toFixed(1)}
                     <span className="text-xs text-white/70 md:text-sm">
                       /10
                     </span>
+                  </span>
+                  <span className="sr-only">
+                    Rated {item.rating.toFixed(1)} out of 10
                   </span>
                 </div>
               )}

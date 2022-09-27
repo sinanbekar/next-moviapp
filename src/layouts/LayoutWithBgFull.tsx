@@ -12,14 +12,14 @@ function LayoutWithBgFull({ children, backgroundImage }: Props) {
       <div className="relative">
         <Header />
         <div
-          className="absolute -top-4 pb-4 -z-50 w-full h-[calc(100%+1rem)] bg-cover bg-left bg-no-repeat blur-[2px]"
+          className="absolute -top-4 -z-50 h-[calc(100%+1rem)] w-full bg-cover bg-left bg-no-repeat pb-4 blur-[2px]"
           style={{
             backgroundImage,
           }}
         ></div>
-        <div className="container mx-auto flex flex-col gap-y-6 p-6 pb-3 lg:gap-y-12 lg:p-12 lg:pb-6">
+        <main className="container mx-auto flex flex-col gap-y-6 p-6 pb-3 lg:gap-y-12 lg:p-12 lg:pb-6">
           {children}
-        </div>
+        </main>
         <Footer />
       </div>
     </>

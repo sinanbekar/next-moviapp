@@ -28,11 +28,10 @@ function SearchBox({ onFocus, onBlur }: SearchBoxProps) {
       setSelectedItem(undefined);
       router.push(cachedItem.redirectUrl);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedItem]);
+  }, [router, selectedItem]);
 
   const debouncedOnChange = React.useMemo(() => {
-    return debounce((e: any) => {
+    return debounce((e: React.ChangeEvent<HTMLInputElement>) => {
       setQuery(e.target.value);
     }, 300);
   }, []);
@@ -44,8 +43,12 @@ function SearchBox({ onFocus, onBlur }: SearchBoxProps) {
   }, [debouncedOnChange]);
 
   return (
-    <div className="relative w-full max-w-sm">
-      <Combobox value={selectedItem} onChange={setSelectedItem}>
+    <div className="relative mx-auto w-full md:m-0 md:max-w-sm">
+      <Combobox
+        value={selectedItem}
+        onChange={setSelectedItem}
+        defaultValue={null}
+      >
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           <svg
             className="h-5 w-5 text-white/60"
@@ -64,6 +67,7 @@ function SearchBox({ onFocus, onBlur }: SearchBoxProps) {
         </div>
 
         <Combobox.Input
+          type="search"
           onChange={debouncedOnChange}
           onFocus={onFocus}
           onBlur={onBlur}
@@ -71,6 +75,7 @@ function SearchBox({ onFocus, onBlur }: SearchBoxProps) {
           className="block w-full rounded-full bg-white/10 p-1 pl-10 text-white/70 ring-white/30 focus:outline-none focus:ring-1 sm:text-sm md:py-1.5"
           placeholder="Find Movies &#38; TV"
         />
+
         <Transition
           as={Fragment}
           leave="transition ease-in duration-100"

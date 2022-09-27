@@ -5,12 +5,14 @@ import cn from "classnames";
 interface WatchTrailerButtonProps {
   redirectUrl?: string;
   handle?: any;
+  ariaLabel?: string;
 }
 
-const WatchTrailerButton: React.FC<WatchTrailerButtonProps> = ({
+const WatchTrailerButton = ({
   redirectUrl,
   handle,
-}) => {
+  ariaLabel,
+}: WatchTrailerButtonProps) => {
   const isAnchorLink = Boolean(redirectUrl);
 
   return (
@@ -23,15 +25,19 @@ const WatchTrailerButton: React.FC<WatchTrailerButtonProps> = ({
       )}
     >
       <button
+        aria-label={ariaLabel}
         {...(handle ? { onClick: handle } : undefined)}
         className={cn(
-          { "px-4 py-2.5": isAnchorLink, "px-2.5 py-1.5": !isAnchorLink },
+          {
+            "px-2.5 py-1.5 md:px-4 md:py-2.5": isAnchorLink,
+            "px-2.5 py-1.5": !isAnchorLink,
+          },
           "self-start rounded-lg bg-moviyellow/95  shadow-2xl transition duration-300 hover:scale-105"
         )}
       >
         <span
           className={cn("font-semibold text-black/80", {
-            "text-lg": isAnchorLink,
+            "text-[15px] md:text-lg": isAnchorLink,
           })}
         >
           Watch Trailer

@@ -1,5 +1,5 @@
 import Layout from "@/layouts/Layout";
-import Slider from "@/components/Slider";
+import Carousel from "@/components/Carousel";
 import SingleItem from "@/components/SingleItem";
 import { parseSingleItemData } from "@/helpers/movi";
 import { Movies, TvShows } from "@/types/tmdb/popular";
@@ -17,7 +17,7 @@ function MediaListingView({
   return (
     <>
       <Layout>
-        <Slider sliderItems={mediaData.results.slice(0, 4)} />
+        <Carousel sliderItems={mediaData.results.slice(0, 4)} />
         <MediaInfiniteScroll
           mediaData={mediaData}
           tmdbQueryString={tmdbQueryString}

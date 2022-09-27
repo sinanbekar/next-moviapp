@@ -43,7 +43,9 @@ const Sidebar = () => {
   );
 
   const SortLink = ({ value }: SortLinkProps) => (
-    <h4 className={cn({ "text-moviyellow": sortVal === value.toLowerCase() })}>
+    <span
+      className={cn({ "text-moviyellow": sortVal === value.toLowerCase() })}
+    >
       <Link
         href={{
           pathname: router.pathname,
@@ -52,33 +54,33 @@ const Sidebar = () => {
       >
         {value}
       </Link>
-    </h4>
+    </span>
   );
 
   return (
-    <div className="sticky top-0 hidden h-screen w-[15vw] flex-col gap-y-8 md:flex">
-      <h3 className="text-4xl">
+    <nav aria-label="Sidebar navigation" className="sticky top-0 hidden h-screen w-[15vw] flex-col gap-y-8 md:flex">
+      <h1 className="text-4xl">
         {isTvPage ? "TV Shows" : isMoviesPage && "Movies"}
-      </h3>
+      </h1>
       <div className="flex flex-col gap-3 text-2xl">
         {!isGenrePage && <SortLink value="Trending" />}
         <SortLink value="Popular" />
       </div>
       <div className="flex flex-col">
-        <h3 className="text-3xl">Genres</h3>
+        <h2 className="text-3xl">Genres</h2>
 
         <div className="mt-4 h-[50vh] snap-y snap-proximity overflow-hidden scrollbar hover:overflow-y-scroll hover:scrollbar-thin hover:scrollbar-track-transparent hover:scrollbar-thumb-gray-600/50 hover:scrollbar-thumb-rounded-full">
           <div className="flex flex-col gap-y-2.5 text-xl">
-            <h4
+            <h3
               className={cn({ "text-moviyellow": genreId === 0 }, "snap-start")}
             >
               <Link href={mediaTypeListPath ?? "/movies"}>All</Link>
-            </h4>
+            </h3>
             {(isMoviesPage ? movieGenres : isTvPage ? tvGenres : []).map(
               (genre) => (
-                <span key={genre.id} className="snap-start">
+                <h3 key={genre.id} className="snap-start">
                   <GenreLink genre={genre} />
-                </span>
+                </h3>
               )
             )}
           </div>
@@ -87,7 +89,7 @@ const Sidebar = () => {
       <div className="absolute bottom-4 flex flex-col gap-y-3">
         <TMDBAttribution />
       </div>
-    </div>
+    </nav>
   );
 };
 

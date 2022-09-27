@@ -9,7 +9,7 @@ const LayoutWithoutSidebar = ({ children }: Props) => {
   return (
     <>
       <Header />
-      <div className="container mx-auto p-4 lg:p-8">{children}</div>
+      <main className="container mx-auto p-4 lg:p-8">{children}</main>
       <Footer />
     </>
   );
