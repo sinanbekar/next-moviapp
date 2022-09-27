@@ -67,12 +67,12 @@ const Carousel = ({ sliderItems }: Props) => {
                         <span className="text-2xl md:text-5xl">
                           {data.title}
                         </span>
-                        <p className="w-full pt-4 text-white/70 line-clamp-2 md:w-3/5 md:line-clamp-3">
+                        <p className="w-full pt-1.5 text-[15px] text-white/70 line-clamp-3 md:w-3/5 md:pt-4 md:text-base">
                           {data.overview}
                         </p>
                       </a>
                     </Link>
-                    <div className="mt-6 md:mt-8">
+                    <div className="mt-4 md:mt-8">
                       <WatchTrailerButton
                         redirectUrl={`${data.redirectSlug}?showTrailerModal=true`}
                         ariaLabel={`Watch trailer for ${data.title}`}
