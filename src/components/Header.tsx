@@ -115,7 +115,10 @@ const Header = () => {
           <hr className="my-2 mb-4 opacity-30 md:hidden" />
           <div className="hidden md:ml-8 md:block">
             {!(session && session.user) ? (
-              <button onClick={() => signIn('google')} className="font-semibold">
+              <button
+                onClick={() => signIn("google")}
+                className="font-semibold"
+              >
                 Sign In
               </button>
             ) : (
@@ -186,13 +189,11 @@ const Header = () => {
                           </a>
                         </Link>
                         <hr className="my-1 opacity-50" />
-                        <div className="hover:bg-white/20">
-                          <button
-                            onClick={() => signOut()}
-                            className="px-4 py-1 text-sm text-white/80 "
-                          >
-                            Sign Out
-                          </button>
+                        <div
+                          onClick={() => signOut()}
+                          className="cursor-pointer px-4 py-1 text-sm text-white/80 hover:bg-white/20"
+                        >
+                          <span>Sign Out</span>
                         </div>
                       </Popover.Panel>
                     </Transition>
@@ -260,7 +261,7 @@ const Header = () => {
             ) : (
               <div className="mx-auto">
                 <button
-                  onClick={() => signIn('google')}
+                  onClick={() => signIn("google")}
                   className="rounded-md bg-moviyellow/80 px-6 py-2 font-semibold text-black"
                 >
                   Sign In
