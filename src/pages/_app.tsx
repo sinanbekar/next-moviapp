@@ -3,12 +3,16 @@ import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import { DefaultSeo } from "next-seo";
 import seoConfig from "../config/seo";
-//import { wrapper } from "@/app/store";
-//import { Provider } from "react-redux";
+import { SessionProvider } from "next-auth/react";
+import type { Session } from "next-auth";
 
-function MoviApp({ Component, ...rest }: AppProps) {
-  //const { store, props } = wrapper.useWrappedStore(rest);
+interface AppPropsWithSession extends AppProps {
+  pageProps: AppProps["pageProps"] & {
+    session?: Session;
+  };
+}
 
+function MoviApp({ Component, pageProps }: AppPropsWithSession) {
   return (
     <>
       <DefaultSeo {...seoConfig} />
@@ -20,11 +24,9 @@ function MoviApp({ Component, ...rest }: AppProps) {
         showOnShallow={true}
         options={{ showSpinner: false }}
       />
-      <Component {...rest.pageProps} />
-
-      {/* <Provider store={store}>
-        <Component {...props.pageProps} />
-      </Provider> */}
+      <SessionProvider session={pageProps.session}>
+        <Component {...pageProps} />
+      </SessionProvider>
     </>
   );
 }
