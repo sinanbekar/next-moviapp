@@ -32,7 +32,7 @@ function SearchBox({ onFocus, onBlur }: SearchBoxProps) {
   }, [selectedItem]);
 
   const debouncedOnChange = React.useMemo(() => {
-    return debounce((e: any) => {
+    return debounce((e: React.ChangeEvent<HTMLInputElement>) => {
       setQuery(e.target.value);
     }, 300);
   }, []);
