@@ -25,13 +25,16 @@ const WatchTrailerButton: React.FC<WatchTrailerButtonProps> = ({
       <button
         {...(handle ? { onClick: handle } : undefined)}
         className={cn(
-          { "px-4 py-2.5": isAnchorLink, "px-2.5 py-1.5": !isAnchorLink },
+          {
+            "px-2 py-1 md:px-4 md:py-2.5": isAnchorLink,
+            "px-2.5 py-1.5": !isAnchorLink,
+          },
           "self-start rounded-lg bg-moviyellow/95  shadow-2xl transition duration-300 hover:scale-105"
         )}
       >
         <span
           className={cn("font-semibold text-black/80", {
-            "text-lg": isAnchorLink,
+            "text-sm md:text-lg": isAnchorLink,
           })}
         >
           Watch Trailer
