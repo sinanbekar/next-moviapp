@@ -22,7 +22,12 @@ export const authOptions: NextAuthOptions = {
       else if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },
+    async session({ session, token, user }) {
+      session.user.id = (token.id || user?.id || token.sub) as string; // NOTE: seems buggy when jwt strategy ¯\_(ツ)_/¯
+      return session;
+    },
   },
+  session: { strategy: "jwt" },
 };
 
 export default NextAuth(authOptions);

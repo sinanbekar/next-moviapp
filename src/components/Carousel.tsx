@@ -73,10 +73,14 @@ const Carousel = ({ sliderItems }: Props) => {
                       </a>
                     </Link>
                     <div className="mt-4 md:mt-8">
-                      <WatchTrailerButton
-                        redirectUrl={`${data.redirectSlug}?showTrailerModal=true`}
-                        ariaLabel={`Watch trailer for ${data.title}`}
-                      />
+                      <Link href={`${data.redirectSlug}?showTrailerModal=true`}>
+                        <a
+                          aria-label={`Watch trailer for ${data.title}`}
+                          className="rounded-lg bg-moviyellow px-2.5 py-1.5 font-semibold text-movidark shadow-2xl md:px-4 md:py-2.5 md:text-lg"
+                        >
+                          Watch Trailer
+                        </a>
+                      </Link>
                     </div>
                   </figcaption>
                 </figure>
