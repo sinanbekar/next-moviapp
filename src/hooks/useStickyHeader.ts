@@ -1,5 +1,4 @@
 import React from "react";
-import debounce from "lodash.debounce";
 
 type Props = {
   scrollTrigger: number;
@@ -19,10 +18,9 @@ const useStickyHeader = ({ scrollTrigger }: Props) => {
   }, [scrollTrigger]);
 
   React.useEffect(() => {
-    const debouncedCheckIsSticky = debounce(checkIsSticky, 100);
-    window.addEventListener("scroll", debouncedCheckIsSticky);
+    window.addEventListener("scroll", checkIsSticky);
 
-    return () => window.removeEventListener("scroll", debouncedCheckIsSticky);
+    return () => window.removeEventListener("scroll", checkIsSticky);
   }, [checkIsSticky]);
 
   return { isSticky };

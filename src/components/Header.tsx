@@ -39,8 +39,8 @@ const Header = () => {
     <header className="sticky -top-px z-20 mx-auto 2xl:container">
       <div
         className={cn(
-          "bg-movidark/70 px-6 backdrop-blur-sm transition-[margin,padding] md:flex md:items-center md:justify-between",
-          { "m-2 rounded-md": !isSticky && !isMenuOpen },
+          "bg-movidark/70 px-4 md:px-6 backdrop-blur-sm md:flex md:items-center md:justify-between md:transition-[margin,padding]",
+          { "md:m-2 md:rounded-md": !isSticky && !isMenuOpen },
           { "bg-movidark/90 backdrop-blur-lg": isMenuOpen }
         )}
       >
