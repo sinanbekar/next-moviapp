@@ -1,4 +1,4 @@
-import { MediaSingleItemData } from "../utils/media-parser";
+import { MediaSingleItemData } from "@/types/tmdb/parsed";
 
 type Props = {
   mediaData: MediaSingleItemData[];

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MediaDetailsData } from "../../utils/media-parser";
+import { MediaDetailsData } from "@/types/tmdb/parsed";
 
 const Genres = ({ genres }: Pick<MediaDetailsData, "genres">) =>
   genres.length > 0 ? (

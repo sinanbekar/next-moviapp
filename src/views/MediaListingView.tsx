@@ -2,7 +2,7 @@ import Layout from "@/layouts/Layout";
 import Carousel from "@/components/Carousel";
 import SingleItem from "@/components/SingleItem";
 import MediaInfiniteScroll from "@/components/MediaInfiniteScroll";
-import type { MediaSingleItemData } from "../utils/media-parser";
+import { MediaSingleItemData } from "@/types/tmdb/parsed";
 
 type MediaListingViewProps = {
   mediaData: MediaSingleItemData[];

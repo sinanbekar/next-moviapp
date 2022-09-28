@@ -1,6 +1,6 @@
 import React from "react";
 import cn from "classnames";
-import { MediaDetailsData } from "../../utils/media-parser";
+import { MediaDetailsData } from "@/types/tmdb/parsed";
 
 const Overview = ({ overview }: Pick<MediaDetailsData, "overview">) => {
   const [shouldTruncate, setShouldTruncate] = React.useState(false);

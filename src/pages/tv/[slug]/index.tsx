@@ -4,9 +4,11 @@ import { InferGetServerSidePropsType } from "@/types/general";
 import MediaDetailsView from "@/views/MediaDetailsView";
 import * as TMDB from "@/lib/tmdb";
 import { TMDBIdNotFound } from "@/lib/tmdb";
-import { parseSlugToIdAndTitle } from "../../../utils/util";
-import { isDetailPageSlug } from "../../../utils/router-util";
-import { parseMediaDetailsData } from "../../../utils/media-parser";
+import {
+  isDetailPageSlug,
+  parseMediaDetailsData,
+  parseSlugToIdAndTitle,
+} from "@/utils/index";
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext

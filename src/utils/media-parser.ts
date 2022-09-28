@@ -1,7 +1,7 @@
-import { MoviesResult, TvResult } from "@/types/tmdb/popular";
 import * as TMDB from "@/lib/tmdb";
-import { formatMinutes, slugify } from "./util";
+import { formatMinutes, slugify } from "@/utils/index";
 import { MovieDetails, TvDetails } from "@/types/tmdb/detail";
+import { MoviesResult, TvResult } from "@/types/tmdb/popular";
 import { MediaType } from "@/types/general";
 
 export const detectMediaType = (
@@ -114,6 +114,3 @@ export const parseMediaDetailsData = (data: MovieDetails | TvDetails) => {
     })),
   };
 };
-
-export type MediaDetailsData = ReturnType<typeof parseMediaDetailsData>;
-export type MediaSingleItemData = ReturnType<typeof parseMediaSingleItemData>;

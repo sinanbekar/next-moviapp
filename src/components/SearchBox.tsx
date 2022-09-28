@@ -5,8 +5,8 @@ import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
 import cn from "classnames";
 import ImageWithShimmer from "./ImageWithShimmer";
-import { MediaSingleItemData } from "../utils/media-parser";
 import { MediaType } from "@/types/general";
+import { MediaSingleItemData } from "@/types/tmdb/parsed";
 
 interface SearchBoxProps {
   onFocus: (e: FocusEvent<HTMLInputElement>) => void;

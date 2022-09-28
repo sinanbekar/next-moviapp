@@ -12,9 +12,9 @@ import {
 import ImageWithShimmer from "@/components/ImageWithShimmer";
 import LayoutWithBgFull from "@/layouts/LayoutWithBgFull";
 import { Dialog, Transition } from "@headlessui/react";
-import { getYearFormatted, pick } from "../utils/util";
-import { MediaDetailsData } from "utils/media-parser";
+import { getYearFormatted, pick } from "@/utils/index";
 import Tooltip from "@/components/Tooltip";
+import { MediaDetailsData } from "@/types/tmdb/parsed";
 
 interface MediaDetailsViewProps {
   detailsData: MediaDetailsData;

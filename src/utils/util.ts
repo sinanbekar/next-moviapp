@@ -1,5 +1,5 @@
+import { MediaDetailsData } from "@/types/tmdb/parsed";
 import _slugify from "slugify";
-import type { MediaDetailsData } from "./media-parser";
 
 export const fetcher = (url: string) => fetch(url).then((res) => res.json());
 

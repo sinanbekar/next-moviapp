@@ -2,7 +2,7 @@ import ImageWithShimmer from "@/components/ImageWithShimmer";
 import React from "react";
 import cn from "classnames";
 import useScroll from "@/hooks/useScroll";
-import { MediaDetailsData } from "../../utils/media-parser";
+import { MediaDetailsData } from "@/types/tmdb/parsed";
 
 const Cast = ({ title, cast }: Pick<MediaDetailsData, "title" | "cast">) => {
   const {

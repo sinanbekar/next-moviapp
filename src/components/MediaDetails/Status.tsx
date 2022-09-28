@@ -1,4 +1,4 @@
-import { MediaDetailsData } from "../../utils/media-parser";
+import { MediaDetailsData } from "@/types/tmdb/parsed";
 
 const Status = ({
   isEnded,

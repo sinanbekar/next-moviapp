@@ -1,6 +1,6 @@
 import InfiniteScroll from "@/components/InfiniteScroll";
 import useTMDBInfiniteFetch from "@/hooks/useTMDBInfiniteFetch";
-import { MediaSingleItemData } from "../utils/media-parser";
+import { MediaSingleItemData } from "@/types/tmdb/parsed";
 
 type Props = {
   mediaData: MediaSingleItemData[];

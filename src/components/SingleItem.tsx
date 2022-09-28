@@ -1,6 +1,6 @@
 import Link from "next/link";
 import ImageWithShimmer from "@/components/ImageWithShimmer";
-import { MediaSingleItemData } from "../utils/media-parser";
+import { MediaSingleItemData } from "@/types/tmdb/parsed";
 
 type Props = {
   item: MediaSingleItemData;

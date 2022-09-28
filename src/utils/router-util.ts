@@ -1,10 +1,8 @@
-import { MovieDetails, TvDetails } from "@/types/tmdb/detail";
 import { NextRouter } from "next/router";
-import { slugify } from "./util";
-import { detectMediaType } from "./media-parser";
-import { parseSlugToIdAndTitle } from "./util";
+import { detectMediaType, parseSlugToIdAndTitle, slugify } from "@/utils/index";
 import { movieGenres, tvGenres } from "@/data/genres";
 import { MediaType } from "@/types/general";
+import { MovieDetails, TvDetails } from "@/types/tmdb/detail";
 
 export const getRouteData = (router: NextRouter) => {
   const genrePathName = "/genre/[slug]/[type]";

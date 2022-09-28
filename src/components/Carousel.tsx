@@ -3,7 +3,7 @@ import { useSwipeable } from "react-swipeable";
 import Image from "next/future/image";
 import cn from "classnames";
 import Link from "next/link";
-import { MediaSingleItemData } from "../utils/media-parser";
+import { MediaSingleItemData } from "@/types/tmdb/parsed";
 
 type Props = {
   items: MediaSingleItemData[];

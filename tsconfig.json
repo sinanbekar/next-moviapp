@@ -20,7 +20,7 @@
       "@/hooks/*": ["hooks/*"],
       "@/config/*": ["config/*"],
       "@/lib/*": ["lib/*"],
-      "@/helpers/*": ["helpers/*"],
+      "@/utils/*": ["utils/*"],
       "@/types/*": ["types/*"],
       "@/data/*": ["data/*"],
       "@/components/*": ["components/*"],

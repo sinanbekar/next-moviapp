@@ -3,9 +3,11 @@ import { NextSeo } from "next-seo";
 import { InferGetServerSidePropsType, MediaType } from "@/types/general";
 import MediaListingView from "@/views/MediaListingView";
 import * as TMDB from "@/lib/tmdb";
-import { parseSlugToIdAndTitle } from "../../../../utils/util";
-import { detectGenre } from "../../../../utils/router-util";
-import { parseMediaSingleItemData } from "../../../../utils/media-parser";
+import {
+  detectGenre,
+  parseMediaSingleItemData,
+  parseSlugToIdAndTitle,
+} from "@/utils/index";
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
