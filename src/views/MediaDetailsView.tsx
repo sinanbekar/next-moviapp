@@ -55,7 +55,7 @@ function MediaDetailsView({ detailsData }: MediaDetailsViewProps) {
   return (
     <>
       <LayoutWithBgFull
-        backgroundImage={`linear-gradient(to right, rgba(10.98%, 7.84%, 5.10%, 1.00) 150px, rgba(10.98%, 7.84%, 5.10%, 0.84) 100%), url(${detailsData.backgroundImageUrl})`}
+        backgroundImage={`linear-gradient(to right, rgb(32,32,32) 150px, rgba(60,50,20, 0.64) 70%), url(${detailsData.backgroundImageUrl})`}
       >
         <div className="flex flex-col gap-12 md:flex-row">
           <div className="mx-auto h-[calc(clamp(150px,25vw,300px)/(2/3))] w-[clamp(150px,25vw,300px)] min-w-[clamp(150px,25vw,300px)] md:mx-0">
