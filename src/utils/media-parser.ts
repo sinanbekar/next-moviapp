@@ -89,7 +89,7 @@ export const parseMediaDetailsData = (data: MovieDetails | TvDetails) => {
       name: genre.name,
       path: `/genre/${genre.id}-${slugify(genre.name)}/${mediaType}`,
     })),
-    isReleased: new Date(releaseDate).getTime() > new Date().getTime(),
+    isReleased: new Date().getTime() > new Date(releaseDate).getTime(),
     isEnded: mediaType === MediaType.TV ? data.status === "Ended" : null,
     rating: getRating(data.vote_average),
     duration: duration !== 0 ? formatMinutes(duration) : null,
