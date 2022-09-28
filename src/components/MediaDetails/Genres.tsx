@@ -1,11 +1,11 @@
-import { MediaDetailsData } from "@/types/parsed-tmdb";
 import Link from "next/link";
+import { MediaDetailsData } from "../../utils/media-parser";
 
 const Genres = ({ genres }: Pick<MediaDetailsData, "genres">) =>
-  genres.length !== 0 ? (
+  genres.length > 0 ? (
     <div className="flex flex-wrap gap-2">
       {genres.map((item) => (
-        <Link key={item.id} href={item.redirectPath}>
+        <Link key={item.id} href={item.path}>
           <a>
             <div
               key={item.id}

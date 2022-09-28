@@ -9,11 +9,16 @@ type Props = {
 };
 
 const MediaInfiniteScroll = ({ mediaData, queryData, children }: Props) => {
-  //@ts-ignore // TODO
+  /*
   const { mediaDataState, hasMore, loadMore } = useTMDBInfiniteFetch({
     mediaData,
     queryData,
   });
+  */
+  // TODO
+  const mediaDataState = mediaData;
+  const loadMore = () => {};
+  const hasMore = false;
 
   return (
     <InfiniteScroll

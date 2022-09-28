@@ -39,7 +39,7 @@ export const apiFetch = async (
   endPoint: string,
   additionalParams?: Record<string, any>
 ) => {
-  const url = new URL(endPoint, BASE_URL);
+  const url = new URL(`${BASE_URL}${endPoint}`);
   const params = new URLSearchParams(additionalParams);
   params.append("api_key", process.env.TMDB_APIKEY!);
   url.search = params.toString();
