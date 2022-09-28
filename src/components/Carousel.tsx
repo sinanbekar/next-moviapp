@@ -2,24 +2,15 @@ import useCarousel from "@/hooks/useCarousel";
 import { useSwipeable } from "react-swipeable";
 import Image from "next/future/image";
 import cn from "classnames";
-import { MoviesResult, TvResult } from "@/types/tmdb/popular";
-import { parseSingleItemData } from "@/helpers/movi";
-import { TMDB } from "@/lib/tmdb";
 import WatchTrailerButton from "@/components/WatchTrailerButton";
 import Link from "next/link";
+import { MediaSingleItemData } from "../utils/media-parser";
 
 type Props = {
-  sliderItems: MoviesResult[] | TvResult[];
+  items: MediaSingleItemData[];
 };
 
-const Carousel = ({ sliderItems }: Props) => {
-  // TODO: refactor (handle in server side)
-  const parsedSliderItems = sliderItems.map((data) => ({
-    ...parseSingleItemData(data),
-    overview: data.overview,
-    backdropUrl: TMDB.backdropPathToAbsoluteUrl(data.backdrop_path),
-  }));
-
+const Carousel = ({ items }: Props) => {
   const {
     index,
     setIndex,
@@ -27,7 +18,7 @@ const Carousel = ({ sliderItems }: Props) => {
     back,
     resetCarouselTimeout,
     setCarouselTimeout,
-  } = useCarousel(parsedSliderItems.length);
+  } = useCarousel(items.length);
 
   const handlers = useSwipeable({
     onSwipedLeft: next,
@@ -49,7 +40,7 @@ const Carousel = ({ sliderItems }: Props) => {
           className="transation whitespace-nowrap duration-1000 ease-in-out"
           style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}
         >
-          {parsedSliderItems.map((data) => {
+          {items.map((data) => {
             return (
               <div key={data.id} className="inline-block w-full">
                 <figure className="relative overflow-visible whitespace-normal">
@@ -58,11 +49,11 @@ const Carousel = ({ sliderItems }: Props) => {
                       alt={data.title}
                       fill={true}
                       className="pointer-events-none w-full rounded-lg object-cover opacity-50 shadow-2xl blur-[1px]"
-                      src={data.backdropUrl}
+                      src={data.backdropImageUrl as string}
                     />
                   </div>
                   <figcaption className="pointer absolute top-1/2 -mt-4 -translate-y-1/2 px-10 md:px-24">
-                    <Link href={data.redirectSlug}>
+                    <Link href={data.path}>
                       <a>
                         <span className="text-2xl md:text-5xl">
                           {data.title}
@@ -74,7 +65,7 @@ const Carousel = ({ sliderItems }: Props) => {
                     </Link>
                     <div className="mt-4 md:mt-8">
                       <WatchTrailerButton
-                        redirectUrl={`${data.redirectSlug}?showTrailerModal=true`}
+                        redirectUrl={`${data.path}?showTrailerModal=true`}
                         ariaLabel={`Watch trailer for ${data.title}`}
                       />
                     </div>
@@ -86,7 +77,7 @@ const Carousel = ({ sliderItems }: Props) => {
         </div>
 
         <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 space-x-3">
-          {parsedSliderItems.map(({ id }, idx) => (
+          {items.map(({ id }, idx) => (
             <button
               key={id}
               onClick={() => setIndex(idx)}
@@ -98,7 +89,7 @@ const Carousel = ({ sliderItems }: Props) => {
                 }
               )}
               aria-current={index === idx}
-              aria-label={`Go to slide ${idx} of ${parsedSliderItems.length}`}
+              aria-label={`Go to slide ${idx} of ${items.length}`}
             ></button>
           ))}
         </div>

@@ -1,8 +1,8 @@
-import { DetailPageData } from "@/types/parsed-tmdb";
 import React from "react";
 import cn from "classnames";
+import { MediaDetailsData } from "../../utils/media-parser";
 
-const Overview = ({ overview }: Pick<DetailPageData, "overview">) => {
+const Overview = ({ overview }: Pick<MediaDetailsData, "overview">) => {
   const [shouldTruncate, setShouldTruncate] = React.useState(false);
   const [readMore, setReadMore] = React.useState(false);
 

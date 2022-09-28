@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { fetcher } from "@/helpers/generic";
+import { fetcher } from "../utils/util";
 
 interface DataResponse<T> {
   data: T | undefined;

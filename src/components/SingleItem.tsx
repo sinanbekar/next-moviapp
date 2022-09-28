@@ -1,19 +1,19 @@
 import Link from "next/link";
-import { SingleItemData } from "@/types/parsed-tmdb";
 import ImageWithShimmer from "@/components/ImageWithShimmer";
+import { MediaSingleItemData } from "../utils/media-parser";
 
 type Props = {
-  item: SingleItemData;
+  item: MediaSingleItemData;
 };
 
 const SingleItem = ({ item }: Props) => {
   return (
     <div className="rounded-md hover:bg-white/20 hover:brightness-110">
-      <Link href={item.redirectSlug}>
+      <Link href={item.path}>
         <a>
           <ImageWithShimmer
             alt={item.title}
-            src={item.posterUrl}
+            src={item.posterImageUrl}
             width="300"
             height="450"
             className="h-auto w-full rounded-t-lg object-cover"
@@ -27,7 +27,7 @@ const SingleItem = ({ item }: Props) => {
               <span className="text-sm font-semibold text-white/70">
                 {item.year}
               </span>
-              {item.rating > 0 && (
+              {Boolean(item.rating) && (
                 <div className="flex items-center gap-x-1">
                   <svg
                     aria-hidden="true"
@@ -43,14 +43,12 @@ const SingleItem = ({ item }: Props) => {
                     />
                   </svg>
                   <span aria-hidden="true" className="text-sm md:text-base">
-                    {item.rating.toFixed(1)}
+                    {item.rating}
                     <span className="text-xs text-white/70 md:text-sm">
                       /10
                     </span>
                   </span>
-                  <span className="sr-only">
-                    Rated {item.rating.toFixed(1)} out of 10
-                  </span>
+                  <span className="sr-only">Rated {item.rating} out of 10</span>
                 </div>
               )}
             </div>

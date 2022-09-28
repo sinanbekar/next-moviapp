@@ -3,9 +3,9 @@ import cn from "classnames";
 import ActiveLink from "./ActiveLink";
 import { useRouter } from "next/router";
 import { tvGenres, movieGenres } from "@/data/genres";
-import { getRouteData } from "@/helpers/movi";
-import { slugify } from "@/helpers/generic";
 import TMDBAttribution from "./TMDBAttribution";
+import { getRouteData } from "../utils/router-util";
+import { slugify } from "../utils/util";
 
 type GenreLinkProps = {
   genre: {
@@ -58,7 +58,10 @@ const Sidebar = () => {
   );
 
   return (
-    <nav aria-label="Sidebar navigation" className="sticky top-0 hidden h-screen w-[15vw] flex-col gap-y-8 md:flex">
+    <nav
+      aria-label="Sidebar navigation"
+      className="sticky top-0 hidden h-screen w-[15vw] flex-col gap-y-8 md:flex"
+    >
       <h1 className="text-4xl">
         {isTvPage ? "TV Shows" : isMoviesPage && "Movies"}
       </h1>

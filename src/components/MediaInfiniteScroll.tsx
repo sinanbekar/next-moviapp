@@ -1,21 +1,18 @@
 import InfiniteScroll from "@/components/InfiniteScroll";
 import useTMDBInfiniteFetch from "@/hooks/useTMDBInfiniteFetch";
-import { Movies, TvShows } from "@/types/tmdb/popular";
+import { MediaSingleItemData } from "../utils/media-parser";
 
 type Props = {
-  mediaData: Movies | TvShows;
-  tmdbQueryString: string;
-  children: (mediaDataState: Movies | TvShows) => React.ReactNode;
+  mediaData: MediaSingleItemData[];
+  queryData: any; // TODO
+  children: (mediaDataState: MediaSingleItemData[]) => React.ReactNode;
 };
 
-const MediaInfiniteScroll = ({
-  mediaData,
-  tmdbQueryString,
-  children,
-}: Props) => {
+const MediaInfiniteScroll = ({ mediaData, queryData, children }: Props) => {
+  //@ts-ignore // TODO
   const { mediaDataState, hasMore, loadMore } = useTMDBInfiniteFetch({
     mediaData,
-    tmdbQueryString,
+    queryData,
   });
 
   return (

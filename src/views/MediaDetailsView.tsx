@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import { useRouter } from "next/router";
-import { DetailPageData } from "@/types/parsed-tmdb";
 import WatchTrailerButton from "@/components/WatchTrailerButton";
 import {
   MediaBasics,
@@ -13,11 +12,12 @@ import {
 } from "@/components/MediaDetails";
 import ImageWithShimmer from "@/components/ImageWithShimmer";
 import LayoutWithBgFull from "@/layouts/LayoutWithBgFull";
-import { getYearFormatted, pick } from "@/helpers/generic";
 import { Dialog, Transition } from "@headlessui/react";
+import { getYearFormatted, pick } from "../utils/util";
+import { MediaDetailsData } from "utils/media-parser";
 
 interface MediaDetailsViewProps {
-  detailsData: DetailPageData;
+  detailsData: MediaDetailsData;
 }
 
 function MediaDetailsView({ detailsData }: MediaDetailsViewProps) {
@@ -55,7 +55,7 @@ function MediaDetailsView({ detailsData }: MediaDetailsViewProps) {
   return (
     <>
       <LayoutWithBgFull
-        backgroundImage={`linear-gradient(to right, rgb(32,32,32) 150px, rgba(60,50,20, 0.64) 70%), url(${detailsData.backgroundImageUrl})`}
+        backgroundImage={`linear-gradient(to right, rgb(32,32,32) 150px, rgba(60,50,20, 0.64) 70%), url(${detailsData.backdropImageUrl})`}
       >
         <div className="flex flex-col gap-12 md:flex-row">
           <div className="mx-auto h-[calc(clamp(150px,25vw,300px)/(2/3))] w-[clamp(150px,25vw,300px)] min-w-[clamp(150px,25vw,300px)] md:mx-0">
@@ -70,7 +70,7 @@ function MediaDetailsView({ detailsData }: MediaDetailsViewProps) {
           <div className="flex flex-col gap-y-6 lg:max-w-3xl">
             <MediaBasics
               {...{
-                ...pick(detailsData, "durationFormatted", "title"),
+                ...pick(detailsData, "duration", "title"),
                 yearText: getYearFormatted(
                   pick(detailsData, "year", "endYear", "isEnded")
                 ),
@@ -85,19 +85,10 @@ function MediaDetailsView({ detailsData }: MediaDetailsViewProps) {
               <WatchTrailerButton handle={watchTrailerHandle} />
             ) : null}
             <Overview overview={detailsData.overview} />
-            <Properties
-              {...pick(
-                detailsData,
-                "platform",
-                "creatorData",
-                "creators",
-                "directorData",
-                "directors"
-              )}
-            />
+            <Properties {...pick(detailsData, "creator", "director")} />
           </div>
         </div>
-        <Cast {...pick(detailsData, "title", "castData")} />
+        <Cast {...pick(detailsData, "title", "cast")} />
       </LayoutWithBgFull>
 
       <Transition.Root show={isModalOpen} as={Fragment}>

@@ -3,3 +3,8 @@
 export type InferGetServerSidePropsType<T extends (args: any) => any> = Awaited<
   Extract<Awaited<ReturnType<T>>, { props: any }>["props"]
 >;
+
+export enum MediaType {
+  Movie = "movie",
+  TV = "tv",
+}

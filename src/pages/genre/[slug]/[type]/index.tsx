@@ -1,10 +1,11 @@
 import { GetServerSidePropsContext } from "next";
 import { NextSeo } from "next-seo";
-import { InferGetServerSidePropsType } from "@/types/general";
+import { InferGetServerSidePropsType, MediaType } from "@/types/general";
 import MediaListingView from "@/views/MediaListingView";
-import { TMDB } from "@/lib/tmdb";
-import { parseSlugToIdAndTitle} from "@/helpers/generic";
-import { detectGenre } from "@/helpers/movi";
+import * as TMDB from "@/lib/tmdb";
+import { parseSlugToIdAndTitle } from "../../../../utils/util";
+import { detectGenre } from "../../../../utils/router-util";
+import { parseMediaSingleItemData } from "../../../../utils/media-parser";
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
@@ -20,24 +21,28 @@ export const getServerSideProps = async (
     };
   }
 
-  const mediaData =
+  const rawMediaData =
     mediaType === "movie"
       ? await TMDB.discoverMoviesByGenreId(genre.id)
       : await TMDB.discoverTvShowsByGenreId(genre.id);
 
-  const tmdbQueryString = `method=${
-    mediaType === "movie"
-      ? "discoverMoviesByGenreId"
-      : mediaType === "tv"
-      ? "discoverTvShowsByGenreId"
-      : ""
-  }&genreId=${slugData.id}`;
+  const mediaData = rawMediaData.results.map((media) =>
+    parseMediaSingleItemData(media)
+  );
+
+  const queryData = {
+    method:
+      mediaType === MediaType.Movie
+        ? TMDB.discoverMoviesByGenreId.name
+        : TMDB.discoverTvShowsByGenreId.name,
+    genreId: slugData.id,
+  };
 
   return {
     props: {
       mediaData,
       mediaType,
-      tmdbQueryString,
+      queryData,
       genre,
     },
   };
@@ -46,7 +51,7 @@ export const getServerSideProps = async (
 const Genre = ({
   mediaData,
   mediaType,
-  tmdbQueryString,
+  queryData,
   genre,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
@@ -57,10 +62,7 @@ const Genre = ({
           mediaType === "movie" ? "Movies" : "TV Shows"
         }`}
       />
-      <MediaListingView
-        mediaData={mediaData}
-        tmdbQueryString={tmdbQueryString}
-      />
+      <MediaListingView mediaData={mediaData} queryData={queryData} />
     </>
   );
 };
