@@ -5,8 +5,8 @@ import MediaListingView from "@/views/MediaListingView";
 import * as TMDB from "@/lib/tmdb";
 import {
   detectGenre,
-  parseMediaSingleItemData,
   parseSlugToIdAndTitle,
+  prepareMediaListData,
 } from "@/utils/index";
 
 export const getServerSideProps = async (
@@ -23,37 +23,31 @@ export const getServerSideProps = async (
     };
   }
 
-  const rawMediaData =
-    mediaType === "movie"
-      ? await TMDB.discoverMoviesByGenreId(genre.id)
-      : await TMDB.discoverTvShowsByGenreId(genre.id);
+  const method =
+    mediaType === MediaType.Movie
+      ? TMDB.discoverMoviesByGenreId
+      : TMDB.discoverTvShowsByGenreId;
 
-  const mediaData = rawMediaData.results.map((media) =>
-    parseMediaSingleItemData(media)
-  );
+  const initialData = prepareMediaListData(await method(genre.id));
 
   const queryData = {
-    method:
-      mediaType === MediaType.Movie
-        ? TMDB.discoverMoviesByGenreId.name
-        : TMDB.discoverTvShowsByGenreId.name,
     genreId: slugData.id,
   };
 
   return {
     props: {
-      mediaData,
-      mediaType,
+      initialData,
       queryData,
+      mediaType,
       genre,
     },
   };
 };
 
 const Genre = ({
-  mediaData,
-  mediaType,
+  initialData,
   queryData,
+  mediaType,
   genre,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
@@ -64,7 +58,7 @@ const Genre = ({
           mediaType === "movie" ? "Movies" : "TV Shows"
         }`}
       />
-      <MediaListingView mediaData={mediaData} queryData={queryData} />
+      <MediaListingView initialData={initialData} queryData={queryData} />
     </>
   );
 };

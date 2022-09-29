@@ -1,29 +1,53 @@
 import InfiniteScroll from "@/components/InfiniteScroll";
-import useTMDBInfiniteFetch from "@/hooks/useTMDBInfiniteFetch";
-import { MediaSingleItemData } from "@/types/tmdb/parsed";
+import {
+  MediaSingleItemData,
+  MediaListingInitialData,
+} from "@/types/tmdb/parsed";
+import React from "react";
+import useSWRInfinite from "swr/infinite";
+import { fetcher } from "@/utils/index";
 
 type Props = {
-  mediaData: MediaSingleItemData[];
-  queryData: any; // TODO
-  children: (mediaDataState: MediaSingleItemData[]) => React.ReactNode;
+  initialData: MediaListingInitialData;
+  queryData: Record<string, any>;
+  className?: string;
+  children: (mediaListData: MediaSingleItemData[]) => React.ReactNode;
 };
 
-const MediaInfiniteScroll = ({ mediaData, queryData, children }: Props) => {
-  /*
-  const { mediaDataState, hasMore, loadMore } = useTMDBInfiniteFetch({
-    mediaData,
-    queryData,
-  });
-  */
-  // TODO
-  const mediaDataState = mediaData;
-  const loadMore = () => {};
-  const hasMore = false;
+const MediaInfiniteScroll = ({
+  initialData,
+  queryData,
+  className,
+  children,
+}: Props) => {
+  const [totalPages, setTotalPages] = React.useState(initialData.totalPages);
+
+  const { data, size, setSize } = useSWRInfinite<MediaSingleItemData[]>(
+    (index) =>
+      totalPages > index
+        ? `/api/tmdb?page=${index + 1}&${new URLSearchParams(queryData)}`
+        : null,
+    (url: string) =>
+      fetcher(url).then((data) => {
+        setTotalPages(data.totalPages);
+        return data.results;
+      }),
+    {
+      fallbackData: [initialData.results],
+    }
+  );
+
+  const mediaListData = data
+    ? ([] as MediaSingleItemData[]).concat(...data)
+    : [];
+  const hasMore = totalPages > size;
+  const loadMore = () => setSize(size + 1);
 
   return (
     <InfiniteScroll
       loadMore={loadMore}
       hasMore={hasMore}
+      className={className}
       loader={
         <div role="status" className="flex justify-center">
           <svg
@@ -47,7 +71,7 @@ const MediaInfiniteScroll = ({ mediaData, queryData, children }: Props) => {
       }
       threshold="-250px"
     >
-      {children(mediaDataState)}
+      {children(mediaListData)}
     </InfiniteScroll>
   );
 };

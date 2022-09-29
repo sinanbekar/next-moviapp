@@ -3,37 +3,32 @@ import { useRouter } from "next/router";
 import MediaListingView from "@/views/MediaListingView";
 import { NextSeo } from "next-seo";
 import * as TMDB from "@/lib/tmdb";
-import { parseMediaSingleItemData } from "@/utils/index";
+import { prepareMediaListData } from "@/utils/index";
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const rawMediaData =
+  const method =
     context.query?.sort === "popular"
-      ? await TMDB.getPopularMovies()
-      : await TMDB.getTrendingMovies();
+      ? TMDB.getPopularMovies
+      : TMDB.getTrendingMovies;
 
-  const mediaData = rawMediaData.results.map((media) =>
-    parseMediaSingleItemData(media)
-  );
+  const initialData = prepareMediaListData(await method());
 
   const queryData = {
-    method:
-      context.query?.sort === "popular"
-        ? TMDB.getPopularMovies.name
-        : TMDB.getTrendingMovies.name,
+    method: method.name,
   };
 
   return {
     props: {
-      mediaData,
+      initialData,
       queryData,
     },
   };
 };
 
 const Movies = ({
-  mediaData,
+  initialData,
   queryData,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
@@ -46,7 +41,7 @@ const Movies = ({
         } Movies`}
         description="Explore trending, popular movies!"
       />
-      <MediaListingView mediaData={mediaData} queryData={queryData} />
+      <MediaListingView initialData={initialData} queryData={queryData} />
     </>
   );
 };

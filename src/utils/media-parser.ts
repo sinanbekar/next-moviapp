@@ -1,13 +1,17 @@
 import * as TMDB from "@/lib/tmdb";
 import { formatMinutes, slugify } from "@/utils/index";
 import { MovieDetails, TvDetails } from "@/types/tmdb/detail";
-import { MoviesResult, TvResult } from "@/types/tmdb/popular";
+import { Movies, MoviesResult, TvResult, TvShows } from "@/types/tmdb/popular";
 import { MediaType } from "@/types/general";
 
 export const detectMediaType = (
   data: MoviesResult | TvResult | MovieDetails | TvDetails
 ) => {
-  return "first_air_date" in data ? MediaType.TV : MediaType.Movie;
+  return "media_type" in data
+    ? (data as any).media_type
+    : "first_air_date" in data
+    ? MediaType.TV
+    : MediaType.Movie;
 };
 
 export const getRating = (voteAverage: number) => {
@@ -112,5 +116,18 @@ export const parseMediaDetailsData = (data: MovieDetails | TvDetails) => {
         ? TMDB.getProfileImageAbsoluteUrl(cast.profile_path)
         : TMDB.DEFAULT_PROFILE_IMAGE_URI,
     })),
+  };
+};
+
+export const prepareMediaListData = (rawData: Movies | TvShows) => {
+  const mediaData = rawData.results.map((item) =>
+    parseMediaSingleItemData(item)
+  );
+
+  return {
+    results: mediaData,
+    totalResults: rawData.total_results,
+    page: rawData.page,
+    totalPages: rawData.total_pages,
   };
 };

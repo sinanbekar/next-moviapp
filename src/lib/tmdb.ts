@@ -24,15 +24,15 @@ export const DEFAULT_POSTER_IMAGE_URI = `data:image/svg+xml,%3csvg xmlns='http:/
 export const DEFAULT_PROFILE_IMAGE_URI = `data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='grey'%3e%3cpath fill-rule='evenodd' d='M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z' clip-rule='evenodd'/%3e%3c/svg%3e`;
 
 export const getBackdropImageAbsoluteUrl = (relativePath: string) => {
-  return `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${relativePath}`;
+  return `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${relativePath}`;
 };
 
 export const getPosterImageAbsoluteUrl = (relativePath: string) => {
-  return `https://image.tmdb.org/t/p/w300_and_h450_bestv2/${relativePath}`;
+  return `https://image.tmdb.org/t/p/w300_and_h450_bestv2${relativePath}`;
 };
 
 export const getProfileImageAbsoluteUrl = (relativePath: string) => {
-  return `https://image.tmdb.org/t/p/w150_and_h150_face/${relativePath}`;
+  return `https://image.tmdb.org/t/p/w150_and_h150_face${relativePath}`;
 };
 
 export const apiFetch = async (

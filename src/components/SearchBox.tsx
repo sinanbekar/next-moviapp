@@ -1,12 +1,16 @@
 import React, { Fragment, FocusEvent } from "react";
 import { Combobox, Transition } from "@headlessui/react";
-import useRequest from "@/hooks/useRequest";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
 import cn from "classnames";
-import ImageWithShimmer from "./ImageWithShimmer";
+import ImageWithShimmer from "@/components/ImageWithShimmer";
 import { MediaType } from "@/types/general";
-import { MediaSingleItemData } from "@/types/tmdb/parsed";
+import {
+  MediaSingleItemData,
+  MediaListingInitialData,
+} from "@/types/tmdb/parsed";
+import useSWR from "swr";
+import { fetcher } from "@/utils/index";
 
 interface SearchBoxProps {
   onFocus: (e: FocusEvent<HTMLInputElement>) => void;
@@ -18,10 +22,11 @@ function SearchBox({ onFocus, onBlur }: SearchBoxProps) {
   const [query, setQuery] = React.useState("");
   const [selectedItem, setSelectedItem] = React.useState<MediaSingleItemData>();
 
-  const apiSearchEndpoint = `/api/search?q=${query}`;
-  const { data, error, isLoading } = useRequest<{
-    results: MediaSingleItemData[];
-  }>(query ? apiSearchEndpoint : null);
+  const { data: searchData, error } = useSWR<MediaListingInitialData>(
+    query ? `/api/search?q=${query}` : null,
+    fetcher
+  );
+  const isLoading = !error && !searchData;
 
   React.useEffect(() => {
     if (selectedItem) {
@@ -84,14 +89,14 @@ function SearchBox({ onFocus, onBlur }: SearchBoxProps) {
           leaveTo="opacity-0"
         >
           <Combobox.Options className="absolute mt-1 max-h-[80vh] w-full snap-y snap-proximity overflow-hidden overflow-y-auto overflow-x-hidden rounded-md bg-movidark/95 shadow-lg scrollbar hover:overflow-y-auto hover:scrollbar-thin hover:scrollbar-track-transparent hover:scrollbar-thumb-gray-600/50 hover:scrollbar-thumb-rounded-full">
-            {!data?.results || data.results.length === 0 ? (
-              query !== "" ? (
-                <span className="block p-4 text-sm text-white/70">
-                  {data ? "Nothing found" : "Loading..."}
-                </span>
-              ) : null
+            {!query ? (
+              <></>
+            ) : !searchData || (searchData?.results?.length ?? 0) === 0 ? (
+              <span className="block p-4 text-sm text-white/70">
+                {Boolean(query) && isLoading ? "Loading..." : "Nothing found"}
+              </span>
             ) : (
-              data.results.map((item) => (
+              searchData.results.map((item) => (
                 <Combobox.Option
                   key={item.id}
                   className={({ active }) =>
