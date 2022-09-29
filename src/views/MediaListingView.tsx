@@ -15,7 +15,7 @@ function MediaListingView({ initialData, queryData }: Props) {
       <Layout>
         <Carousel items={initialData.results.slice(0, 4)} />
         <MediaInfiniteScroll
-          className="my-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+          className="my-4 grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-y-8 gap-x-4"
           initialData={initialData}
           queryData={queryData}
         >
