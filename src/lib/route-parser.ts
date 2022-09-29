@@ -1,8 +1,9 @@
 import { NextRouter } from "next/router";
-import { detectMediaType, parseSlugToIdAndTitle, slugify } from "@/utils/index";
+import { parseSlugToIdAndTitle, slugify } from "@/utils/util";
 import { movieGenres, tvGenres } from "@/data/genres";
 import { MediaType } from "@/types/general";
 import { MovieDetails, TvDetails } from "@/types/tmdb/detail";
+import { detectMediaType } from "@/lib/media-parser";
 
 export const getRouteData = (router: NextRouter) => {
   const genrePathName = "/genre/[slug]/[type]";

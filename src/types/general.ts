@@ -8,3 +8,8 @@ export enum MediaType {
   Movie = "movie",
   TV = "tv",
 }
+
+export enum UserStateCollection {
+  Favorites = "favorites",
+  Watchlist = "watchlist",
+}

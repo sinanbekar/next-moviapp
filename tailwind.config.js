@@ -11,8 +11,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        moviyellow: "#fde401",
-        movidark: "#1d1d1d",
+        moviyellow: "#c8af00",
+        movidark: "#2d2d2d",
       },
     },
   },

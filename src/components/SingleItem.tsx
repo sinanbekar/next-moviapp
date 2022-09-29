@@ -8,18 +8,17 @@ type Props = {
 
 const SingleItem = ({ item }: Props) => {
   return (
-    <div className="rounded-md hover:bg-white/20 hover:brightness-110">
-      <Link href={item.path}>
-        <a>
+    <Link href={item.path}>
+      <a>
+        <div className="relative cursor-pointer overflow-hidden rounded-lg shadow-xl hover:brightness-125">
           <ImageWithShimmer
             alt={item.title}
             src={item.posterImageUrl}
             width="300"
             height="450"
-            className="h-auto w-full rounded-t-lg object-cover"
+            className="h-auto w-full rounded-lg object-cover"
           />
-
-          <div className="p-1.5">
+          <div className="absolute bottom-0 left-0 z-10 flex h-2/3 w-full flex-col justify-end bg-gradient-to-t from-black px-5 py-4">
             <h4 title={item.title} className="truncate font-semibold">
               {item.title}
             </h4>
@@ -53,9 +52,9 @@ const SingleItem = ({ item }: Props) => {
               )}
             </div>
           </div>
-        </a>
-      </Link>
-    </div>
+        </div>
+      </a>
+    </Link>
   );
 };
 

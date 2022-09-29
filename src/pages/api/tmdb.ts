@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import * as TMDB from "@/lib/tmdb";
-import { prepareMediaListData } from "@/utils/index";
+import { prepareMediaListData } from "@/lib/media-parser";
 
 export default async function handler(
   req: NextApiRequest,

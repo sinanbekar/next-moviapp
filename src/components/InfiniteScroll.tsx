@@ -19,13 +19,15 @@ const InfiniteScroll = ({
   className,
 }: Props) => (
   <>
-    <div className={className}>{children}</div>
+  <div className={className}>
+    {children}
+  </div>
     {hasMore && (
       <Waypoint onEnter={loadMore} bottomOffset={threshold}>
         {loader}
       </Waypoint>
     )}
-  </>
+    </>
 );
 
 export default React.memo(InfiniteScroll);

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import MediaListingView from "@/views/MediaListingView";
 import { NextSeo } from "next-seo";
 import * as TMDB from "@/lib/tmdb";
-import { prepareMediaListData } from "@/utils/index";
+import { prepareMediaListData } from "@/lib/media-parser";
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext

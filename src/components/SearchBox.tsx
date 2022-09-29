@@ -10,7 +10,7 @@ import {
   MediaListingInitialData,
 } from "@/types/tmdb/parsed";
 import useSWR from "swr";
-import { fetcher } from "@/utils/index";
+import { fetcher } from "@/utils/util";
 
 interface SearchBoxProps {
   onFocus: (e: FocusEvent<HTMLInputElement>) => void;

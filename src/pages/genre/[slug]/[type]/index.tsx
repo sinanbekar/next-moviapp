@@ -3,11 +3,9 @@ import { NextSeo } from "next-seo";
 import { InferGetServerSidePropsType, MediaType } from "@/types/general";
 import MediaListingView from "@/views/MediaListingView";
 import * as TMDB from "@/lib/tmdb";
-import {
-  detectGenre,
-  parseSlugToIdAndTitle,
-  prepareMediaListData,
-} from "@/utils/index";
+import { prepareMediaListData } from "@/lib/media-parser";
+import { parseSlugToIdAndTitle } from "@/utils/util";
+import { detectGenre } from "@/lib/route-parser";
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext

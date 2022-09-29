@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className="container mx-auto flex flex-col items-center justify-center p-4 backdrop-blur-[2px]">
+    <footer className="container mx-auto mt-auto flex flex-col items-center justify-center p-4 backdrop-blur-[2px]">
       <a
         title="next-moviapp"
         target="_blank"

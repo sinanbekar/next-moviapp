@@ -2,9 +2,10 @@ import Link from "next/link";
 import cn from "classnames";
 import { useRouter } from "next/router";
 import { tvGenres, movieGenres } from "@/data/genres";
-import { getRouteData, slugify } from "@/utils/index";
+import { slugify } from "@/utils/util";
 import ActiveLink from "@/components/ActiveLink";
 import TMDBAttribution from "@/components/TMDBAttribution";
+import { getRouteData } from "@/lib/route-parser";
 
 type GenreLinkProps = {
   genre: {

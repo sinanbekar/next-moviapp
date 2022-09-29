@@ -1,5 +1,5 @@
 import * as TMDB from "@/lib/tmdb";
-import { formatMinutes, slugify } from "@/utils/index";
+import { formatMinutes, slugify } from "@/utils/util";
 import { MovieDetails, TvDetails } from "@/types/tmdb/detail";
 import { Movies, MoviesResult, TvResult, TvShows } from "@/types/tmdb/popular";
 import { MediaType } from "@/types/general";
@@ -8,7 +8,7 @@ export const detectMediaType = (
   data: MoviesResult | TvResult | MovieDetails | TvDetails
 ) => {
   return "media_type" in data
-    ? (data as any).media_type
+    ? ((data as any).media_type as `${MediaType}`)
     : "first_air_date" in data
     ? MediaType.TV
     : MediaType.Movie;
@@ -19,6 +19,9 @@ export const getRating = (voteAverage: number) => {
   return !isNaN(rating) || rating !== 0 ? rating : null;
 };
 
+export const getPath = (id: number, title: string, mediaType: string) =>
+  `/${mediaType}/${id}-${slugify(title)}`;
+
 export const parseMediaSingleItemData = (data: MoviesResult | TvResult) => {
   const mediaType = detectMediaType(data);
 
@@ -26,7 +29,6 @@ export const parseMediaSingleItemData = (data: MoviesResult | TvResult) => {
     mediaType === MediaType.Movie
       ? (data as MoviesResult).title
       : (data as TvResult).name;
-  const path = `/${mediaType}/${data.id}-${slugify(title)}`;
 
   const releaseDate =
     mediaType === MediaType.Movie
@@ -45,7 +47,7 @@ export const parseMediaSingleItemData = (data: MoviesResult | TvResult) => {
     backdropImageUrl: data.backdrop_path
       ? TMDB.getBackdropImageAbsoluteUrl(data.poster_path)
       : null,
-    path,
+    path: getPath(data.id, title, mediaType),
     rating: getRating(data.vote_average),
     genreIds: data.genre_ids,
   };
@@ -76,11 +78,12 @@ export const parseMediaDetailsData = (data: MovieDetails | TvDetails) => {
     0;
 
   return {
+    id: data.id,
     title:
       mediaType === MediaType.Movie
         ? (data as MovieDetails).title
         : (data as TvDetails).name,
-    type: mediaType,
+    mediaType,
     overview: data.overview,
     posterImageUrl: data.poster_path
       ? TMDB.getPosterImageAbsoluteUrl(data.poster_path)
