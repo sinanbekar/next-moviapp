@@ -29,6 +29,7 @@ export const getServerSideProps = async (
   const initialData = prepareMediaListData(await method(genre.id));
 
   const queryData = {
+    method: method.name,
     genreId: slugData.id,
   };
 
