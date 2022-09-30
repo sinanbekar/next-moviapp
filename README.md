@@ -36,7 +36,7 @@ Clone and install the dependencies for `next-moviapp` locally:
 ```bash 
 git clone https://github.com/sinanbekar/next-moviapp
 cd next-moviapp
-npm install
+yarn install
 ```
 
 ## Setup
@@ -48,9 +48,9 @@ npm install
     
 ## Running locally
 
-* `npm run dev`: dev build
-* `npm run build`: production build
-* `npm run start`: start the project with optimized prod build
+* `yarn dev`: dev build
+* `yarn build`: production build
+* `yarn start`: start the project with optimized prod build
     
 ## License
 

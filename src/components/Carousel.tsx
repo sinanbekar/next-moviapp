@@ -44,12 +44,14 @@ const Carousel = ({ items }: Props) => {
               <div key={data.id} className="inline-block w-full">
                 <figure className="relative overflow-visible whitespace-normal">
                   <div className="relative h-64 w-full bg-gradient-to-t from-black md:h-96">
-                    <Image
-                      alt={data.title}
-                      fill={true}
-                      className="pointer-events-none w-full rounded-lg object-cover opacity-50 shadow-2xl blur-[1px]"
-                      src={data.backdropImageUrl as string}
-                    />
+                    {data.backdropImageUrl ? (
+                      <Image
+                        alt={data.title}
+                        fill={true}
+                        className="pointer-events-none w-full rounded-lg object-cover opacity-50 shadow-2xl blur-[1px]"
+                        src={data.backdropImageUrl}
+                      />
+                    ) : null}
                   </div>
                   <figcaption className="pointer absolute bottom-0 flex h-full w-full flex-col justify-center bg-gradient-to-tr from-black/50 px-10 md:px-24">
                     <Link href={data.path}>
