@@ -48,12 +48,12 @@ const Profile = () => {
     mediaType: MediaType,
     mediaId: number
   ) => {
-    const data = itemType === "favorites" ? favorites : watchlist;
+    const data = itemType === "favorites" ? favorites! : watchlist!;
 
     const optimisticData = {
       ...data,
-      results: data!.results.filter(
-        (item) => item.id !== mediaId && item.mediaType === mediaType
+      results: data.results.filter(
+        (item) => !(item.id === mediaId && item.mediaType === mediaType)
       ),
     };
 
@@ -67,7 +67,7 @@ const Profile = () => {
         body: JSON.stringify({ mediaType, mediaId }),
       });
 
-      return response.ok ? optimisticData : data!;
+      return response.ok ? optimisticData : data;
     };
 
     try {
@@ -94,7 +94,7 @@ const Profile = () => {
         <div className="px-2">
           <h1 className="text-3xl md:text-4xl">Profile</h1>
           <div className="mt-2 text-lg md:text-2xl">
-            Welcome Back,{" "}
+            Welcome Back,&nbsp;
             <span className="font-bold">{session.user!.name}</span>
           </div>
         </div>
