@@ -5,3 +5,7 @@
 :root {
   color-scheme: dark;
 }
+
+#__next {
+  @apply flex min-h-screen flex-col justify-start;
+}

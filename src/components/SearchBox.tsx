@@ -1,11 +1,16 @@
 import React, { Fragment, FocusEvent } from "react";
 import { Combobox, Transition } from "@headlessui/react";
-import { SearchItem } from "@/types/parsed-tmdb";
-import useRequest from "@/hooks/useRequest";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
 import cn from "classnames";
-import ImageWithShimmer from "./ImageWithShimmer";
+import ImageWithShimmer from "@/components/ImageWithShimmer";
+import { MediaType } from "@/types/general";
+import {
+  MediaSingleItemData,
+  MediaListingInitialData,
+} from "@/types/tmdb/parsed";
+import useSWR from "swr";
+import { fetcher } from "@/utils/util";
 
 interface SearchBoxProps {
   onFocus: (e: FocusEvent<HTMLInputElement>) => void;
@@ -15,18 +20,19 @@ interface SearchBoxProps {
 function SearchBox({ onFocus, onBlur }: SearchBoxProps) {
   const router = useRouter();
   const [query, setQuery] = React.useState("");
-  const [selectedItem, setSelectedItem] = React.useState<SearchItem>();
+  const [selectedItem, setSelectedItem] = React.useState<MediaSingleItemData>();
 
-  const apiSearchEndpoint = `/api/search?q=${query}`;
-  const { data, error, isLoading } = useRequest<{ results: SearchItem[] }>(
-    query ? apiSearchEndpoint : null
+  const { data: searchData, error } = useSWR<MediaListingInitialData>(
+    query ? `/api/search?q=${query}` : null,
+    fetcher
   );
+  const isLoading = !error && !searchData;
 
   React.useEffect(() => {
     if (selectedItem) {
       const cachedItem = selectedItem;
       setSelectedItem(undefined);
-      router.push(cachedItem.redirectUrl);
+      router.push(cachedItem.path);
     }
   }, [router, selectedItem]);
 
@@ -71,7 +77,7 @@ function SearchBox({ onFocus, onBlur }: SearchBoxProps) {
           onChange={debouncedOnChange}
           onFocus={onFocus}
           onBlur={onBlur}
-          displayValue={(item: SearchItem) => item?.title}
+          displayValue={(item: MediaSingleItemData) => item?.title}
           className="block w-full rounded-full bg-white/10 p-1 pl-10 text-white/70 ring-white/30 focus:outline-none focus:ring-1 sm:text-sm md:py-1.5"
           placeholder="Find Movies &#38; TV"
         />
@@ -83,14 +89,14 @@ function SearchBox({ onFocus, onBlur }: SearchBoxProps) {
           leaveTo="opacity-0"
         >
           <Combobox.Options className="absolute mt-1 max-h-[80vh] w-full snap-y snap-proximity overflow-hidden overflow-y-auto overflow-x-hidden rounded-md bg-movidark/95 shadow-lg scrollbar hover:overflow-y-auto hover:scrollbar-thin hover:scrollbar-track-transparent hover:scrollbar-thumb-gray-600/50 hover:scrollbar-thumb-rounded-full">
-            {!data?.results || data.results.length === 0 ? (
-              query !== "" ? (
-                <span className="block p-4 text-sm text-white/70">
-                  {data ? "Nothing found" : "Loading..."}
-                </span>
-              ) : null
+            {!query ? (
+              <></>
+            ) : !searchData || (searchData?.results?.length ?? 0) === 0 ? (
+              <span className="block p-4 text-sm text-white/70">
+                {Boolean(query) && isLoading ? "Loading..." : "Nothing found"}
+              </span>
             ) : (
-              data.results.map((item) => (
+              searchData.results.map((item) => (
                 <Combobox.Option
                   key={item.id}
                   className={({ active }) =>
@@ -105,7 +111,7 @@ function SearchBox({ onFocus, onBlur }: SearchBoxProps) {
                       <ImageWithShimmer
                         height={60}
                         width={40}
-                        src={item.posterUrl}
+                        src={item.posterImageUrl}
                         className="h-[60px] w-[40px] rounded-sm"
                         alt={item.title}
                       />
@@ -115,11 +121,9 @@ function SearchBox({ onFocus, onBlur }: SearchBoxProps) {
                         </span>
                         {Boolean(item.mediaType) && Boolean(item.year) ? (
                           <span className="block text-sm text-white/50">
-                            {item.mediaType === "movie"
+                            {item.mediaType === MediaType.Movie
                               ? "Movie"
-                              : item.mediaType === "tv"
-                              ? "TV Show"
-                              : ""}
+                              : "TV Show"}
                             &nbsp; • {item.year}
                           </span>
                         ) : null}

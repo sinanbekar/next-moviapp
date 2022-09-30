@@ -2,31 +2,34 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import MediaListingView from "@/views/MediaListingView";
 import { NextSeo } from "next-seo";
-import { TMDB } from "@/lib/tmdb";
+import * as TMDB from "@/lib/tmdb";
+import { prepareMediaListData } from "@/lib/media-parser";
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const mediaData =
+  const method =
     context.query?.sort === "popular"
-      ? await TMDB.getPopularMovies()
-      : await TMDB.getTrendingMovies();
+      ? TMDB.getPopularMovies
+      : TMDB.getTrendingMovies;
 
-  const tmdbQueryString = `method=${
-    context.query?.sort === "popular" ? "getPopularMovies" : "getTrendingMovies"
-  }`;
+  const initialData = prepareMediaListData(await method());
+
+  const queryData = {
+    method: method.name,
+  };
 
   return {
     props: {
-      mediaData: mediaData,
-      tmdbQueryString,
+      initialData,
+      queryData,
     },
   };
 };
 
 const Movies = ({
-  mediaData,
-  tmdbQueryString,
+  initialData,
+  queryData,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
 
@@ -38,10 +41,7 @@ const Movies = ({
         } Movies`}
         description="Explore trending, popular movies!"
       />
-      <MediaListingView
-        mediaData={mediaData}
-        tmdbQueryString={tmdbQueryString}
-      />
+      <MediaListingView initialData={initialData} queryData={queryData} />
     </>
   );
 };

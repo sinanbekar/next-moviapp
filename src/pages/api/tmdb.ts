@@ -1,42 +1,51 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { TMDB, TMDBError } from "@/lib/tmdb";
+import * as TMDB from "@/lib/tmdb";
+import { prepareMediaListData } from "@/lib/media-parser";
 
-export default async function tmdbApi(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  /* TODO: Refactor */
-
-  const page = req.query?.page ?? 1;
+  const page = Number(req.query?.page ?? 1);
   const genreId = req.query?.genreId ?? null;
-  const method = req.query?.method as string;
+  const method = req.query?.method as string | undefined;
 
-  try {
-    const resData = [
-      "discoverMovies",
-      "discoverTvShows",
-      "getTrendingMovies",
-      "getTrendingTvShows",
-      "getPopularMovies",
-      "getPopularTvShows",
-    ].includes(method)
-      ? /* @ts-ignore */
-        await TMDB[method](page)
-      : ["discoverMoviesByGenreId", "discoverTvShowsByGenreId"].includes(method)
-      ? /* @ts-ignore */
-        await TMDB[method](genreId, page)
-      : { results: [] };
-
-    if (resData.results.length === 0) {
-      throw new TMDBError();
-    }
-
-    res.statusCode = 200;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify(resData));
-  } catch (error) {
-    res.statusCode = 404;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ results: [] }));
+  if (!method || isNaN(page)) {
+    res.status(400).json({ message: "Bad request" });
+    return;
   }
+
+  const generalMethods = [
+    "discoverMovies",
+    "discoverTvShows",
+    "getTrendingMovies",
+    "getTrendingTvShows",
+    "getPopularMovies",
+    "getPopularTvShows",
+  ] as const;
+
+  const genreMethods = [
+    "discoverMoviesByGenreId",
+    "discoverTvShowsByGenreId",
+  ] as const;
+
+  const rawData = generalMethods.includes(
+    method as typeof generalMethods[number]
+  )
+    ? await TMDB[method as typeof generalMethods[number]](page)
+    : genreMethods.includes(method as typeof genreMethods[number]) && genreId
+    ? await TMDB[method as typeof genreMethods[number]](Number(genreId), page)
+    : null;
+
+  if (!rawData) {
+    res.status(404).json({
+      results: [],
+      totalResults: null,
+      page: null,
+      totalPage: null,
+    });
+    return;
+  }
+
+  res.status(200).json(prepareMediaListData(rawData));
 }

@@ -2,9 +2,11 @@ import { GetServerSidePropsContext } from "next";
 import { NextSeo } from "next-seo";
 import { InferGetServerSidePropsType } from "@/types/general";
 import MediaDetailsView from "@/views/MediaDetailsView";
-import { parseDetailPageData, isDetailPageSlug } from "@/helpers/movi";
-import { parseSlugToIdAndTitle } from "@/helpers/generic";
-import { TMDB, TMDBIdNotFound } from "@/lib/tmdb";
+import * as TMDB from "@/lib/tmdb";
+import { TMDBIdNotFound } from "@/lib/tmdb";
+import { parseSlugToIdAndTitle } from "@/utils/util";
+import { isDetailPageSlug } from "@/lib/route-parser";
+import { parseMediaDetailsData } from "@/lib/media-parser";
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
@@ -33,7 +35,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const detailsData = parseDetailPageData(rawData);
+  const detailsData = parseMediaDetailsData(rawData);
 
   return {
     props: {

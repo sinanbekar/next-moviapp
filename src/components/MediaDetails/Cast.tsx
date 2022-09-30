@@ -1,13 +1,10 @@
-import { DetailPageData } from "@/types/parsed-tmdb";
 import ImageWithShimmer from "@/components/ImageWithShimmer";
 import React from "react";
 import cn from "classnames";
 import useScroll from "@/hooks/useScroll";
+import { MediaDetailsData } from "@/types/tmdb/parsed";
 
-const Cast = ({
-  title,
-  castData,
-}: Pick<DetailPageData, "title" | "castData">) => {
+const Cast = ({ title, cast }: Pick<MediaDetailsData, "title" | "cast">) => {
   const {
     ref: scrollRef,
     handleScroll,
@@ -70,7 +67,7 @@ const Cast = ({
       >
         <div className="inline-block px-6 sm:px-12">
           <ul className="grid auto-cols-min grid-flow-col gap-x-4 p-1 sm:gap-x-8">
-            {castData.map((person, idx) => (
+            {cast.map((person, idx) => (
               <li
                 key={person.id}
                 className="flex w-[25vw] snap-start flex-col gap-y-2 focus:outline-none sm:w-[150px]"

@@ -1,34 +1,29 @@
 import Layout from "@/layouts/Layout";
 import Carousel from "@/components/Carousel";
 import SingleItem from "@/components/SingleItem";
-import { parseSingleItemData } from "@/helpers/movi";
-import { Movies, TvShows } from "@/types/tmdb/popular";
 import MediaInfiniteScroll from "@/components/MediaInfiniteScroll";
+import { MediaListingInitialData } from "@/types/tmdb/parsed";
 
-type MediaListingViewProps = {
-  mediaData: Movies | TvShows;
-  tmdbQueryString: string;
-};
+interface MediaListingViewProps {
+  initialData: MediaListingInitialData;
+  queryData: Record<string, any>;
+}
 
-function MediaListingView({
-  mediaData,
-  tmdbQueryString,
-}: MediaListingViewProps) {
+function MediaListingView({ initialData, queryData }: MediaListingViewProps) {
   return (
     <>
       <Layout>
-        <Carousel sliderItems={mediaData.results.slice(0, 4)} />
+        <Carousel items={initialData.results.slice(0, 4)} />
         <MediaInfiniteScroll
-          mediaData={mediaData}
-          tmdbQueryString={tmdbQueryString}
+          className="my-4 grid grid-cols-2 sm:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-y-8 gap-x-4"
+          initialData={initialData}
+          queryData={queryData}
         >
-          {(mediaDataState) => (
-            <div className="my-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-              {mediaDataState.results.slice(4).map((data) => (
-                <SingleItem key={data.id} item={parseSingleItemData(data)} />
-              ))}
-            </div>
-          )}
+          {(mediaListData) =>
+            mediaListData
+              .slice(4)
+              .map((data) => <SingleItem key={data.id} item={data} />)
+          }
         </MediaInfiniteScroll>
       </Layout>
     </>

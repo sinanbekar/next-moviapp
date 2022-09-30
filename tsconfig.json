@@ -16,18 +16,18 @@
     "incremental": true,
     "baseUrl": "src",
     "paths": {
+      "@/app/*": ["app/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/config/*": ["config/*"],
+      "@/lib/*": ["lib/*"],
+      "@/utils/*": ["utils/*"],
+      "@/types/*": ["types/*"],
+      "@/data/*": ["data/*"],
       "@/components/*": ["components/*"],
       "@/layouts/*": ["layouts/*"],
-      "@/views/*": ["views/*"],
-      "@/lib/*": ["lib/*"],
-      "@/app/*": ["app/*"],
-      "@/helpers/*": ["helpers/*"],
-      "@/hooks/*": ["hooks/*"],
-      "@/data/*": ["data/*"],
-      "@/features/*": ["features/*"],
-      "@/types/*": ["types/*"]
+      "@/views/*": ["views/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "__tests__/fetch.test.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }

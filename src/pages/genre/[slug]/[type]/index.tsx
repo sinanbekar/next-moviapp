@@ -1,10 +1,11 @@
 import { GetServerSidePropsContext } from "next";
 import { NextSeo } from "next-seo";
-import { InferGetServerSidePropsType } from "@/types/general";
+import { InferGetServerSidePropsType, MediaType } from "@/types/general";
 import MediaListingView from "@/views/MediaListingView";
-import { TMDB } from "@/lib/tmdb";
-import { parseSlugToIdAndTitle} from "@/helpers/generic";
-import { detectGenre } from "@/helpers/movi";
+import * as TMDB from "@/lib/tmdb";
+import { prepareMediaListData } from "@/lib/media-parser";
+import { parseSlugToIdAndTitle } from "@/utils/util";
+import { detectGenre } from "@/lib/route-parser";
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
@@ -20,33 +21,31 @@ export const getServerSideProps = async (
     };
   }
 
-  const mediaData =
-    mediaType === "movie"
-      ? await TMDB.discoverMoviesByGenreId(genre.id)
-      : await TMDB.discoverTvShowsByGenreId(genre.id);
+  const method =
+    mediaType === MediaType.Movie
+      ? TMDB.discoverMoviesByGenreId
+      : TMDB.discoverTvShowsByGenreId;
 
-  const tmdbQueryString = `method=${
-    mediaType === "movie"
-      ? "discoverMoviesByGenreId"
-      : mediaType === "tv"
-      ? "discoverTvShowsByGenreId"
-      : ""
-  }&genreId=${slugData.id}`;
+  const initialData = prepareMediaListData(await method(genre.id));
+
+  const queryData = {
+    genreId: slugData.id,
+  };
 
   return {
     props: {
-      mediaData,
+      initialData,
+      queryData,
       mediaType,
-      tmdbQueryString,
       genre,
     },
   };
 };
 
 const Genre = ({
-  mediaData,
+  initialData,
+  queryData,
   mediaType,
-  tmdbQueryString,
   genre,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
@@ -57,10 +56,7 @@ const Genre = ({
           mediaType === "movie" ? "Movies" : "TV Shows"
         }`}
       />
-      <MediaListingView
-        mediaData={mediaData}
-        tmdbQueryString={tmdbQueryString}
-      />
+      <MediaListingView initialData={initialData} queryData={queryData} />
     </>
   );
 };

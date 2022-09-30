@@ -17,7 +17,7 @@ function MoviApp({ Component, pageProps }: AppPropsWithSession) {
     <>
       <DefaultSeo {...seoConfig} />
       <NextNProgress
-        color="#fde401" //moviyellow tailwind.config.js
+        color="#c8af00" //moviyellow tailwind.config.js
         startPosition={0.3}
         stopDelayMs={200}
         height={3}

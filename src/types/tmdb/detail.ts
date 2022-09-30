@@ -11,8 +11,6 @@ import {
   Videos,
 } from "@/types/tmdb";
 
-import { WatchProviders } from "@/types/tmdb/watch-providers";
-
 export interface MovieDetails {
   adult: boolean;
   backdrop_path: string;
@@ -33,11 +31,9 @@ export interface MovieDetails {
   revenue: number;
   runtime: number;
   spoken_languages: SpokenLanguage[];
-  /* appended */
   credits: Credits;
   videos: Videos;
-  "watch/providers": WatchProviders;
-  /* appended */
+  "watch/providers": any;
   status: string;
   tagline: string;
   title: string;
@@ -73,11 +69,9 @@ export interface TvDetails {
   production_countries: ProductionCountry[];
   seasons: Season[];
   spoken_languages: SpokenLanguage[];
-  /* appended */
   credits: Credits;
   videos: Videos;
-  "watch/providers": WatchProviders;
-  /* appended */
+  "watch/providers": any;
   status: string;
   tagline: string;
   type: string;

@@ -1,11 +1,11 @@
 import Link from "next/link";
 import cn from "classnames";
-import ActiveLink from "./ActiveLink";
 import { useRouter } from "next/router";
 import { tvGenres, movieGenres } from "@/data/genres";
-import { getRouteData } from "@/helpers/movi";
-import { slugify } from "@/helpers/generic";
-import TMDBAttribution from "./TMDBAttribution";
+import { slugify } from "@/utils/util";
+import ActiveLink from "@/components/ActiveLink";
+import TMDBAttribution from "@/components/TMDBAttribution";
+import { getRouteData } from "@/lib/route-parser";
 
 type GenreLinkProps = {
   genre: {
@@ -58,7 +58,10 @@ const Sidebar = () => {
   );
 
   return (
-    <nav aria-label="Sidebar navigation" className="sticky top-0 hidden h-screen w-[15vw] flex-col gap-y-8 md:flex">
+    <nav
+      aria-label="Sidebar navigation"
+      className="sticky top-0 hidden h-screen w-[15vw] flex-col gap-y-8 md:flex"
+    >
       <h1 className="text-4xl">
         {isTvPage ? "TV Shows" : isMoviesPage && "Movies"}
       </h1>

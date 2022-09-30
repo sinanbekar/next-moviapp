@@ -1,10 +1,10 @@
-import { DetailPageData } from "@/types/parsed-tmdb";
+import { MediaDetailsData } from "@/types/tmdb/parsed";
 
 const Rating = ({
   isReleased,
   rating,
-}: Pick<DetailPageData, "isReleased" | "rating">) =>
-  isReleased && rating > 0 ? (
+}: Pick<MediaDetailsData, "isReleased" | "rating">) =>
+  isReleased && Boolean(rating) ? (
     <div className="flex items-center gap-x-1">
       <svg
         aria-hidden="true"
@@ -20,10 +20,10 @@ const Rating = ({
         />
       </svg>
       <span aria-hidden="true" className="text-lg font-semibold">
-        {rating.toFixed(1)}
+        {rating}
         <span className="text-base text-white/70">&nbsp;/&nbsp;10</span>
       </span>
-      <span className="sr-only">Rated {rating.toFixed(1)} out of 10</span>
+      <span className="sr-only">Rated {rating} out of 10</span>
     </div>
   ) : (
     <></>
