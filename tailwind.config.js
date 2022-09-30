@@ -1,4 +1,4 @@
-//const defaultConfig = require("tailwindcss/defaultConfig");
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -10,6 +10,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Inter", ...defaultTheme.fontFamily.sans],
+      },
       colors: {
         moviyellow: "#c8af00",
         movidark: "#2d2d2d",
