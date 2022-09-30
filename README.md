@@ -1,9 +1,13 @@
 
 # next-moviapp
 
-A Movie App built using Next.js and [The Movie Database (TMDB v3)](https://www.themoviedb.org/) API. 
+A Movie App built using Next.js and [The Movie Database (TMDB v3)](https://www.themoviedb.org/) API.
+Explore movies, tv shows. Personalize watchlist and favorites.
 
-![moviapp](https://i.imgur.com/xofDlAh.png)
+![Moviapp home](https://i.imgur.com/JUpX5h9.png)
+![Moviapp home scrolled](https://i.imgur.com/pkEDZrn.png)
+![Moviapp details page](https://i.imgur.com/4udpu6u.png)
+![Moviapp profile page](https://i.imgur.com/CajiVXr.png)
 
 ## Tech Stack
 
@@ -12,7 +16,8 @@ Built with:
 * Next.js
 * TypeScript
 * Firebase
-* Redux (toolkit) and Redux Thunk
+* NextAuth
+* next-seo
 * Tailwind CSS
 * swr
 
